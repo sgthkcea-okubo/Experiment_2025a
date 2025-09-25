@@ -136,7 +136,7 @@
                     ctx.beginPath();
                     ctx.arc(250, 200, base_radius - offset - Number(r_diff), 0, 2 * Math.PI);
                     ctx.fillStyle = left_color;
-                    ctx.globalAlpha = 0.5;
+                    ctx.globalAlpha = 1.0;
                     ctx.fill();
                     ctx.globalAlpha = 1.0;
                     ctx.strokeStyle = left_color;
@@ -145,7 +145,7 @@
                     ctx.beginPath();
                     ctx.arc(550, 200, base_radius + offset + Number(r_diff), 0, 2 * Math.PI);
                     ctx.fillStyle = right_color;
-                    ctx.globalAlpha = 0.5;
+                    ctx.globalAlpha = 1.0;
                     ctx.fill();
                     ctx.globalAlpha = 1.0;
                     ctx.strokeStyle = right_color;
