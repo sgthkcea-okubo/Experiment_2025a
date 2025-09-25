@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Experiment_2025a</title>
+    <script src="https://unpkg.com/jspsych@8.2.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-text@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-multi-choice@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-slider-response@2.1.0"></script>
+    <link href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css" rel="stylesheet" type="text/css" />
+    <meta charset="UTF-8">
+    <script src="https://sgthkcea-okubo.github.io/jspsych-psychophysics/jspsych-psychophysics.js"></script>
+    <script src="https://sgthkcea-okubo.github.io/jsPsychSheet/jspsychsheet.js"></script>
+    <link rel="stylesheet" href="https://sgthkcea-okubo.github.io/jsPsychSheet/jspsychsheet.css">
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body></body>
+
+<script>
+    // timelineの定義を先に移動
+    var timeline = [];
+
+    const jsPsych = initJsPsych({
+        timeline: timeline,
+    });
+
+    // window.callbackContinue = function (response) {
+    //      console.log(response);
+    // }
+
+    // var ajaxOptions;
+
+    // $.ajax('https://script.google.com/macros/s/AKfycbzjAau7lzcw-SGlWbOdGQ27T_f1tTS0gG20t0g7ZyZJEUiVVksEmrzWkZUF6K4_Hrmj/exec?callback=callbackContinue', ajaxOptions);
+
+    // 条件のランダムサンプリング
+    var condition = jsPsych.randomization.sampleWithoutReplacement([0, 1], 1)[0];
+
+    var welcome = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus:
+            '<p>（インフォームドコンセント）</p>',
+        choices: ['アンケートに進む']
+    };
+    timeline.push(welcome);
+
+    const colorset1_1 = ["blue"];
+    const colorset1_2 = ["yellow"];
+    const colorset1 = [colorset1_1, colorset1_2];
+
+    const num_of_loops = 2;
+
+    for (let i = 0; i < num_of_loops; i++) {
+
+        var colorcond1 = jsPsych.randomization.sampleWithReplacement(colorset1, 1)[0];
+        var colorcond2 = jsPsych.randomization.sampleWithReplacement(_.difference(colorset1, [colorcond1]), 1)[0];
+
+        var color1 = jsPsych.randomization.sampleWithReplacement(colorcond1, 1)[0];
+
+        var color2;
+        if (condition == 0) {
+            color2 = jsPsych.randomization.sampleWithReplacement(colorcond1, 1)[0];
+        }
+        else if (condition == 1) {
+            color2 = jsPsych.randomization.sampleWithReplacement(colorcond2, 1)[0];
+        }
+        
+        let left_color = color1;
+        let right_color = color2;
+        
+        let a = jsPsych.randomization.randomInt(-50, 50);
+
+        let illusion_or_not = {
+            type: jsPsychHtmlSliderResponse,
+            stimulus: `
+                <div style="width:1000px; margin: 0 auto;">
+                  <p style="text-align:center;">
+                    画像に示された2つの図形について、<br>
+                    大きさが等しいと感じるようにスライダーの示す値を調整し、"次に進む"を押してください。
+                  </p>
+                  <div style="display:flex; justify-content:center;">
+                    <canvas id="illusion_canvas_${i}" width="800" height="400" style="background:white; border:1px solid #ccc;"></canvas>
+                  </div>
+                  <div style="text-align:center; margin-top: 1em;">
+                    現在のスライダーの値: <span id="r_diff_value_${i}">0</span>
+                  </div>
+                </div>
+            `,
+            min: -50,
+            max: 50,
+            slider_start: 0,
+            value: 0,
+            step: 1,
+            labels: ['-50', '0', '50'],
+            button_label: '次に進む',
+            require_movement: true,
+            on_load: function() {
+                let base_radius = 100;
+                let offset = a;
+                function drawIllusion(r_diff) {
+                    let canvas = document.getElementById('illusion_canvas_' + i);
+                    if (!canvas) return;
+                    let ctx = canvas.getContext('2d');
+                    ctx.clearRect(0,0,canvas.width,canvas.height);
+                    // 左円
+                    ctx.beginPath();
+                    ctx.arc(250, 200, base_radius - offset - Number(r_diff), 0, 2 * Math.PI);
+                    ctx.fillStyle = left_color;
+                    ctx.globalAlpha = 0.5;
+                    ctx.fill();
+                    ctx.globalAlpha = 1.0;
+                    ctx.strokeStyle = left_color;
+                    ctx.stroke();
+                    // 右円
+                    ctx.beginPath();
+                    ctx.arc(550, 200, base_radius + offset + Number(r_diff), 0, 2 * Math.PI);
+                    ctx.fillStyle = right_color;
+                    ctx.globalAlpha = 0.5;
+                    ctx.fill();
+                    ctx.globalAlpha = 1.0;
+                    ctx.strokeStyle = right_color;
+                    ctx.stroke();
+                }
+                drawIllusion(0);
+                const slider = document.querySelector('input[type=range]');
+                const rDiffSpan = document.getElementById('r_diff_value_' + i);
+                if (slider && rDiffSpan) {
+                    slider.addEventListener('input', function() {
+                        drawIllusion(this.value);
+                        rDiffSpan.textContent = this.value; // ここでリアルタイム表示
+                    });
+                    // 初期値表示
+                    rDiffSpan.textContent = slider.value;
+                }
+            },
+            on_finish: (data) => {
+                data.a = a,
+                data.left_color = left_color,
+                data.right_color = right_color
+            },
+        };
+        timeline.push(illusion_or_not);
+
+        var confidence_level = {
+            type: jsPsychHtmlSliderResponse,
+            stimulus: `
+              <div style="width:500px;">
+                <p>直前の質問が正しい確率について、<br>自己評価したものを回答してください。</p>
+                <div style="margin-top: 1em; text-align: center;">
+                  現在のスライダーの値: <span id="confidence_value_${i}">50</span>%
+                </div>
+              </div>
+            `,
+            name: 'confidence_level_' + i,
+            button_label: '次に進む',
+            require_movement: true,
+            labels: ['0%', '100%'],
+            min: 0,
+            max: 100,
+            slider_start: 50,
+            step: 1,
+            on_load: function() {
+              const slider = document.querySelector('input[type=range]');
+              const valueSpan = document.getElementById('confidence_value_' + i);
+              if (slider && valueSpan) {
+                slider.addEventListener('input', function() {
+                  valueSpan.textContent = this.value;
+                });
+                valueSpan.textContent = slider.value;
+              }
+            }
+        };
+        timeline.push(confidence_level);
+
+        var model_answer = {
+            type: jsPsychHtmlButtonResponse,
+            stimulus: function() {
+                // 直前（illusion_or_not）の回答値を取得
+                var last_response = jsPsych.data.get().last(2).values()[0].response;
+                return `正答は「${-a}」であり、あなたの回答は${last_response}です。`;
+            },
+            name: "model_answer_" + i,
+            choices: ['次に進む']
+        };
+        timeline.push(model_answer);
+    }
+
+    var age = {
+        type: jsPsychSurveyText,
+        questions: [
+            { prompt: '年齢を入力してください', columns: 3, required: true, name: 'age' },
+        ],
+        button_label: '次へ',
+    };
+    timeline.push(age);
+
+    var gender = {
+        type: jsPsychSurveyMultiChoice,
+        questions: [
+            {prompt: "性別を選択してください",
+             options: jsPsych.randomization.repeat(['男性', '女性', 'その他'], 1),
+             required: true,
+             horizontal: true,
+             name: 'gender' 
+            },
+        ],
+        button_label: '次へ',
+    };
+    timeline.push(gender);
+
+    var finish = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: '<p>これでアンケートは終わりです。<br>' +
+            '以下のボタンから回答を送信してください。<br>' +
+            '回答データの送信後、活動報告に記入していただくパスワードが表示されます。</p>',
+        choices: ['回答データを送信'],
+        on_finish: function() {
+            function escapeCSV(value) {
+              return `"${String(value).replace(/"/g, '""')}"`;
+            }
+
+            url = "https://script.google.com/macros/s/AKfycbw2lLU_IIebHnUlAV-XT6-ZagKFaqjmCKizfSLsRFY5yvazMGTnd16XzlKrQ4k5LNc/exec";
+            //jsPsych.data.displayData();
+            
+            fetch(url, {
+              method: "POST",
+              headers: {
+                "Content-Type": "text/plain"  // ← 重要：プリフライト回避
+              },
+              body: JSON.stringify({
+                subID: null,
+                getSubID: 0,
+                data: jsPsych.data.get().csv()
+              })
+            })
+            .then(response => response.text())  // ← JSONではなくtextで受け取る
+            .then(text => {
+              try {
+                const result = JSON.parse(text);
+                console.log("成功:", result);
+              } catch (e) {
+                console.error("JSONパース失敗:", text);
+              }
+            })
+            .catch(error => console.error("fetch失敗:", error));
+
+            //jsPsychSheet.uploadData(url, jsPsych.data.get().csv(), 0)
+        }
+    };
+    timeline.push(finish);
+
+    var thanks = {
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: '<p>これでアンケートは終わりです。<br>' +
+            '以下のパスワードを、記録したうえで、活動報告の欄に入力してください。<br>' +
+            'Pass: xxxxxxxx<br>' +
+            'パスワードの記録が済み次第、タブを閉じ実験への参加を終了してください。<br>' +
+            '実験に参加いただき、ありがとうございました。</p>',
+      choices: 'NO_KEYS'
+    };
+    timeline.push(thanks);
+
+    jsPsych.run(timeline);
+
+</script>
+
+</html>
