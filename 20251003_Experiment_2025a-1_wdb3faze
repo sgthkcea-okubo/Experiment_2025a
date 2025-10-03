@@ -36,7 +36,7 @@
 
     // $.ajax('https://script.google.com/macros/s/AKfycbzjAau7lzcw-SGlWbOdGQ27T_f1tTS0gG20t0g7ZyZJEUiVVksEmrzWkZUF6K4_Hrmj/exec?callback=callbackContinue', ajaxOptions);
 
-    var condition = 0
+    var condition = 1
 
     var welcome = {
         type: jsPsychHtmlButtonResponse,
@@ -170,37 +170,6 @@
             },
         };
         timeline.push(illusion_or_not);
-
-        var confidence_level = {
-            type: jsPsychHtmlSliderResponse,
-            stimulus: `
-              <div style="width:500px;">
-                <p>直前の質問が正しい確率について、<br>自己評価したものを回答してください。</p>
-                <div style="margin-top: 1em; text-align: center;">
-                  現在のスライダーの値: <span id="confidence_value_${i}">50</span>%
-                </div>
-              </div>
-            `,
-            name: 'confidence_level_' + i,
-            button_label: '次に進む',
-            require_movement: true,
-            labels: ['0%', '100%'],
-            min: 0,
-            max: 100,
-            slider_start: 50,
-            step: 1,
-            on_load: function() {
-              const slider = document.querySelector('input[type=range]');
-              const valueSpan = document.getElementById('confidence_value_' + i);
-              if (slider && valueSpan) {
-                slider.addEventListener('input', function() {
-                  valueSpan.textContent = this.value;
-                });
-                valueSpan.textContent = slider.value;
-              }
-            }
-        };
-        timeline.push(confidence_level);
 
         var model_answer = {
             type: jsPsychHtmlButtonResponse,
