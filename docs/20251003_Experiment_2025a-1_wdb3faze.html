@@ -207,6 +207,20 @@
     };
     timeline.push(gender);
 
+    var equip = {
+        type: jsPsychSurveyMultiChoice,
+        questions: [
+            {prompt: "使用機器を回答してください",
+             options: jsPsych.randomization.repeat(['デスクトップPC', 'ノートPC', 'スマートフォン', 'スマートフォン', 'その他'], 1),
+             required: true,
+             horizontal: true,
+             name: 'gender' 
+            },
+        ],
+        button_label: '次へ',
+    };
+    timeline.push(equip);
+
     var finish = {
         type: jsPsychHtmlButtonResponse,
         stimulus: '<p>これでアンケートは終わりです。<br>' +
