@@ -112,104 +112,120 @@
         let a = jsPsych.randomization.randomInt(-50, 50);
 
         let illusion_or_not = {
-            {
-                type: jsPsychHtmlSliderResponse,
-                stimulus: `
-                    <div style="width:1000px; margin: 0 auto;">
-                      <p style="text-align:center;">
-                        画像に示された2つの図形について、<br>
-                        大きさが等しいと感じるようにスライダーの示す値を調整し、"次に進む"を押してください。
-                      </p>
-                      <div style="display:flex; justify-content:center;">
-                        <canvas id="illusion_canvas_${i}" width="800" height="400" style="background:white; border:1px solid #ccc;"></canvas>
-                      </div>
-                      <div style="text-align:center; margin-top: 1em;">
-                        現在のスライダーの値: <span id="r_diff_value_${i}">0</span>
-                      </div>
-                    </div>
-                `,
-                min: -50,
-                max: 50,
-                slider_start: 0,
-                value: 0,
-                step: 1,
-                labels: ['-50', '0', '50'],
-                button_label: '次に進む',
-                require_movement: true,
-                on_load: function() {
-                    let base_radius = 100;
-                    let offset = a;
-                    function drawIllusion(r_diff) {
-                        let canvas = document.getElementById('illusion_canvas_' + i);
-                        if (!canvas) return;
-                        let ctx = canvas.getContext('2d');
-                        ctx.clearRect(0,0,canvas.width,canvas.height);
-                        // 左円
-                        ctx.beginPath();
-                        ctx.arc(250, 200, base_radius - offset - Number(r_diff), 0, 2 * Math.PI);
-                        ctx.fillStyle = left_color;
-                        ctx.globalAlpha = 1.0;
-                        ctx.fill();
-                        ctx.globalAlpha = 1.0;
-                        ctx.strokeStyle = left_color;
-                        ctx.stroke();
-                        // 右円
-                        ctx.beginPath();
-                        ctx.arc(550, 200, base_radius + offset + Number(r_diff), 0, 2 * Math.PI);
-                        ctx.fillStyle = right_color;
-                        ctx.globalAlpha = 1.0;
-                        ctx.fill();
-                        ctx.globalAlpha = 1.0;
-                        ctx.strokeStyle = right_color;
-                        ctx.stroke();
-                    }
-                    drawIllusion(0);
-                    const slider = document.querySelector('input[type=range]');
-                    const rDiffSpan = document.getElementById('r_diff_value_' + i);
-                    if (slider && rDiffSpan) {
-                        slider.addEventListener('input', function() {
-                            drawIllusion(this.value);
-                            rDiffSpan.textContent = this.value; // ここでリアルタイム表示
-                        });
-                        // 初期値表示
-                        rDiffSpan.textContent = slider.value;
-                    }
-                },
-                on_finish: (data) => {
-                    data.a = a,
-                    data.left_color = left_color,
-                    data.right_color = right_color
-                },
-                {
-                    type: jsPsychHtmlSliderResponse,
-                    stimulus: `
-                      <div style="width:500px;">
-                        <p>直前の質問が正しい確率について、<br>自己評価したものを回答してください。</p>
-                        <div style="margin-top: 1em; text-align: center;">
-                          現在のスライダーの値: <span id="confidence_value_${i}">50</span>%
-                        </div>
-                      </div>
-                    `,
-                    name: 'confidence_level_' + i,
-                    button_label: '次に進む',
-                    require_movement: true,
-                    labels: ['0%', '100%'],
-                    min: 0,
-                    max: 100,
-                    slider_start: 50,
-                    step: 1,
-                    on_load: function() {
-                      const slider = document.querySelector('input[type=range]');
-                      const valueSpan = document.getElementById('confidence_value_' + i);
-                      if (slider && valueSpan) {
-                        slider.addEventListener('input', function() {
-                          valueSpan.textContent = this.value;
-                        });
-                        valueSpan.textContent = slider.value;
-                      }
-                    }
+            type: jsPsychHtmlSliderResponse,
+            stimulus: `
+                <div style="width:1000px; margin: 0 auto;">
+                  <p style="text-align:center;">
+                    画像に示された2つの図形について、<br>
+                    大きさが等しいと感じるようにスライダーの示す値を調整し、"次に進む"を押してください。
+                  </p>
+                  <div style="display:flex; justify-content:center;">
+                    <canvas id="illusion_canvas_${i}" width="800" height="400" style="background:white; border:1px solid #ccc;"></canvas>
+                  </div>
+                  <div style="text-align:center; margin-top: 1em;">
+                    現在のスライダーの値: <span id="r_diff_value_${i}">0</span>
+                  </div>
+                  <p>直前の質問が正しい確率について、<br>自己評価したものを回答してください。</p>
+                   <div style="display:flex; justify-content:center;">
+                    <canvas id="confidence_value_${i}" width="800" height="400" style="background:white; border:1px solid #ccc;"></canvas>
+                  </div>
+                  <div style="margin-top: 1em; text-align: center;">
+                  現在のスライダーの値: <span id="confidence_value_${i}">50</span>%
+                  </div>
+                </div>
+            `,
+            min: -50,
+            max: 50,
+            slider_start: 0,
+            value: 0,
+            step: 1,
+            labels: ['-50', '0', '50'],
+            button_label: '次に進む',
+            require_movement: true,
+            on_load: function() {
+                let base_radius = 100;
+                let offset = a;
+                function drawIllusion(r_diff) {
+                    let canvas = document.getElementById('illusion_canvas_' + i);
+                    if (!canvas) return;
+                    let ctx = canvas.getContext('2d');
+                    ctx.clearRect(0,0,canvas.width,canvas.height);
+                    // 左円
+                    ctx.beginPath();
+                    ctx.arc(250, 200, base_radius - offset - Number(r_diff), 0, 2 * Math.PI);
+                    ctx.fillStyle = left_color;
+                    ctx.globalAlpha = 1.0;
+                    ctx.fill();
+                    ctx.globalAlpha = 1.0;
+                    ctx.strokeStyle = left_color;
+                    ctx.stroke();
+                    // 右円
+                    ctx.beginPath();
+                    ctx.arc(550, 200, base_radius + offset + Number(r_diff), 0, 2 * Math.PI);
+                    ctx.fillStyle = right_color;
+                    ctx.globalAlpha = 1.0;
+                    ctx.fill();
+                    ctx.globalAlpha = 1.0;
+                    ctx.strokeStyle = right_color;
+                    ctx.stroke();
                 }
-            };
+                drawIllusion(0);
+                const slider_1 = document.querySelector('input[type=range]');
+                const rDiffSpan = document.getElementById('r_diff_value_' + i);
+                if (slider_1 && rDiffSpan) {
+                    slider_1.addEventListener('input', function() {
+                        drawIllusion(this.value);
+                        rDiffSpan.textContent = this.value; // ここでリアルタイム表示
+                    });
+                    // 初期値表示
+                    rDiffSpan.textContent = slider_1.value;
+                }
+                const slider_2 = document.querySelector('input[type=range]');
+                const valueSpan = document.getElementById('confidence_value_' + i);
+                if (slider_2 && valueSpan) {
+                slider_2.addEventListener('input', function() {
+                    valueSpan.textContent = this.value;
+                });
+                valueSpan.textContent = slider_2.value;
+                }
+            },
+            on_finish: (data) => {
+                data.a = a,
+                data.left_color = left_color,
+                data.right_color = right_color
+            },
+        };
+        timeline.push(illusion_or_not);
+
+        var confidence_level = {
+            type: jsPsychHtmlSliderResponse,
+            stimulus: `
+              <div style="width:500px;">
+                <p>直前の質問が正しい確率について、<br>自己評価したものを回答してください。</p>
+                <div style="margin-top: 1em; text-align: center;">
+                  現在のスライダーの値: <span id="confidence_value_${i}">50</span>%
+                </div>
+              </div>
+            `,
+            name: 'confidence_level_' + i,
+            button_label: '次に進む',
+            require_movement: true,
+            labels: ['0%', '100%'],
+            min: 0,
+            max: 100,
+            slider_start: 50,
+            step: 1,
+            on_load: function() {
+              const slider = document.querySelector('input[type=range]');
+              const valueSpan = document.getElementById('confidence_value_' + i);
+              if (slider && valueSpan) {
+                slider.addEventListener('input', function() {
+                  valueSpan.textContent = this.value;
+                });
+                valueSpan.textContent = slider.value;
+              }
+            }
+        };
         timeline.push(confidence_level);
 
         var model_answer = {
