@@ -73,12 +73,23 @@
             </div>`,
         choices: ['アンケートに進む']
     };
+    
     timeline.push(welcome);
+
+    var name = {
+      type: jsPsychSurveyText,
+      questions: [
+        {prompt: '回答者の名前を入力してください。'}
+      ]
+    };
+        
+    timeline.push(name);
+    
     const colorset1_1 = ["blue"];
     const colorset1_2 = ["yellow"];
     const colorset1 = [colorset1_1, colorset1_2];
 
-    const num_of_loops = 60;
+    const num_of_loops = 2;
 
     for (let i = 0; i < num_of_loops; i++) {
 
@@ -213,7 +224,6 @@
             choices: ['次に進む']
         };
         timeline.push(model_answer);
-    }
 
     var age = {
         type: jsPsychSurveyText,
@@ -237,20 +247,6 @@
         button_label: '次へ',
     };
     timeline.push(gender);
-
-    var equip = {
-        type: jsPsychSurveyMultiChoice,
-        questions: [
-            {prompt: "使用機器を回答してください",
-             options: jsPsych.randomization.repeat(['デスクトップPC', 'ノートPC', 'スマートフォン', 'スマートフォン', 'その他'], 1),
-             required: true,
-             horizontal: true,
-             name: 'gender' 
-            },
-        ],
-        button_label: '次へ',
-    };
-    timeline.push(equip);
 
     var finish = {
         type: jsPsychHtmlButtonResponse,
