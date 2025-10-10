@@ -126,9 +126,7 @@
                     現在のスライダーの値: <span id="r_diff_value_${i}">0</span>
                   </div>
                   <p>直前の質問が正しい確率について、<br>自己評価したものを回答してください。</p>
-                   <div style="display:flex; justify-content:center;">
-                    <canvas id="confidence_value_${i}" width="800" height="400" style="background:white; border:1px solid #ccc;"></canvas>
-                  </div>
+                   <input type="range" id="confidence_value_${i}" name="q1" min="0" max="100" value="50" step="1" style="width:80%;">
                   <div style="margin-top: 1em; text-align: center;">
                   現在のスライダーの値: <span id="confidence_value_${i}">50</span>%
                   </div>
