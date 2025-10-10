@@ -181,8 +181,8 @@
                 const slider_2 = document.querySelector('input[type=range]');
                 const valueSpan = document.getElementById('confidence_value_' + i);
                 if (slider_2 && valueSpan) {
-                slider_2.addEventListener('input', function() {
-                    valueSpan.textContent = this.value;
+                    slider_2.addEventListener('input', function() {
+                        valueSpan.textContent = this.value;
                 });
                 valueSpan.textContent = slider_2.value;
                 }
@@ -190,7 +190,9 @@
             on_finish: (data) => {
                 data.a = a,
                 data.left_color = left_color,
-                data.right_color = right_color
+                data.right_color = right_color,
+                data.illusion_value = document.getElementById('slider_1').value,
+                data.confidence_value = document.getElementById('slider_2').value,
             },
         };
         timeline.push(illusion_or_not);
