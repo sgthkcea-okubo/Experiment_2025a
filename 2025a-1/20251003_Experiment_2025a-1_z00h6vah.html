@@ -74,17 +74,18 @@
             </div>`,
         choices: ['アンケートに進む']
     };
+    
+    timeline.push(welcome);
 
-    var age = {
+    var name = {
       type: jsPsychSurveyText,
       questions: [
         {prompt: '回答者の名前を入力してください。'}
       ]
     };
-    
         
-    timeline.push(age);
-    timeline.push(welcome);
+    timeline.push(name);
+    
     const colorset1_1 = ["blue"];
     const colorset1_2 = ["yellow"];
     const colorset1 = [colorset1_1, colorset1_2];
