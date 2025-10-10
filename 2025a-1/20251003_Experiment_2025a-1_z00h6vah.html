@@ -11,6 +11,7 @@
     <script src="https://unpkg.com/@jspsych/plugin-html-slider-response@2.1.0"></script>
     <link href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css" rel="stylesheet" type="text/css" />
     <meta charset="UTF-8">
+    <script src="https://unpkg.com/@jspsych/plugin-survey-text@1.1.3"></script>
     <script src="https://sgthkcea-okubo.github.io/jspsych-psychophysics/jspsych-psychophysics.js"></script>
     <script src="https://sgthkcea-okubo.github.io/jsPsychSheet/jspsychsheet.js"></script>
     <link rel="stylesheet" href="https://sgthkcea-okubo.github.io/jsPsychSheet/jspsychsheet.css">
@@ -73,6 +74,16 @@
             </div>`,
         choices: ['アンケートに進む']
     };
+
+    var age = {
+      type: jsPsychSurveyText,
+      questions: [
+        {prompt: '回答者の名前を入力してください。'}
+      ]
+    };
+    
+        
+    timeline.push(age);
     timeline.push(welcome);
     const colorset1_1 = ["blue"];
     const colorset1_2 = ["yellow"];
@@ -213,7 +224,6 @@
             choices: ['次に進む']
         };
         timeline.push(model_answer);
-    }
 
     var age = {
         type: jsPsychSurveyText,
