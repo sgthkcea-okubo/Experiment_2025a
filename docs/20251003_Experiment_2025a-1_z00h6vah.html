@@ -215,7 +215,7 @@
         var model_answer = {
             type: jsPsychHtmlButtonResponse,
             stimulus: function() {
-              const last_response = jsPsych.data.get().last(2).values()[0].response;
+              const last_response = jsPsych.data.get().last(1).values()[0].response;
               return `正答は「${-a}」であり、あなたの回答は ${last_response} です。`;
             },
             name: "model_answer_" + i,
