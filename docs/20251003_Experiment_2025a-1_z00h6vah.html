@@ -41,7 +41,7 @@
     var welcome = {
         type: jsPsychHtmlButtonResponse,
         stimulus:
-            `<div style="width:100%; max-width:600px;">
+            `<div style="width:100%; max-width:720px;">
                 <style>
                     pre {
                     white-space: pre-wrap;
@@ -114,7 +114,7 @@
        let illusion_or_not = {
           type: jsPsychHtmlButtonResponse,
           stimulus: `
-            <div style="width:1000px; margin: 0 auto;">
+            <div style="width:100%; max-width:720px; margin: 0 auto;">
               <p style="text-align:center;">
                 画像に示された2つの図形について、大きさが等しいと感じるようにスライダーの示す値を調整し、"次に進む"を押してください。
               </p>
@@ -123,13 +123,13 @@
               </div>
         
               <!-- input と表示 span に固有 id を付与 -->
-              <input type="range" id="r_diff_input_${i}" name="q1" min="-50" max="50" value="0" step="1" style="width:50%;">
+              <input type="range" id="r_diff_input_${i}" name="q1" min="-50" max="50" value="0" step="1" style="width:100%;">
               <div style="text-align:center; margin-top: 1em;">
                 現在のスライダーの値: <span id="r_diff_value_${i}">0</span>
               </div>
         
               <p>直前の質問が正しい確率について、自己評価したものを回答してください。</p>
-              <input type="range" id="confidence_input_${i}" name="q2" min="0" max="100" value="50" step="1" style="width:50%;">
+              <input type="range" id="confidence_input_${i}" name="q2" min="0" max="100" value="50" step="1" style="width:100%;">
               <div style="text-align:center; margin-top: 1em;">
                 現在のスライダーの値: <span id="confidence_value_${i}">50</span>%
               </div>
