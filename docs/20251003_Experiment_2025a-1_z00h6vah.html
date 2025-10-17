@@ -97,10 +97,6 @@
     const num_of_loops = 100;
 
     // --- 重要: ループ中のトライアルを一旦この配列にためる ---
-    // こうしてネストされた timeline ブロックにまとめることで、
-    // 内側のトライアルから jsPsych.endCurrentTimeline() を呼ぶと
-    // 以降のループ反復をスキップしてネストブロックの後へジャンプできます。
-    // （ただし endCurrentTimeline が undefined の環境では代わりにフラグ制御を行う）
     var loop_timeline = [];
 
     // 継続フラグ（endCurrentTimeline が無い場合の代替）
@@ -151,7 +147,7 @@
               </div>
             </div>
           `,
-          // "ループ後の質問へジャンプ" をここから削除し、model_answer に移動しました
+          // choices: '次に進む' のみ（ジャンプ選択は model_answer に移動）
           choices: ['次に進む'],
           on_load: function() {
             let base_radius = 100;
@@ -200,30 +196,49 @@
               });
               cSpan.textContent = cInput.value;
             }
+
+            // ---- 重要: ボタンが押された直後にスライダー値をデータに保存する ----
+            // 表示中のボタン要素を取得（この on_load 実行時点ではボタンが生成済み）
+            const displayEl = jsPsych.getDisplayElement();
+            const buttons = displayEl.querySelectorAll('.jspsych-btn');
+            if (buttons && buttons.length > 0) {
+              buttons.forEach((btn) => {
+                // クリック時にスライダーの現在値を jsPsych.data に確実に書き込む
+                btn.addEventListener('click', function() {
+                  const rValEl = document.getElementById('r_diff_input_' + i);
+                  const cValEl = document.getElementById('confidence_input_' + i);
+                  const rVal = rValEl ? Number(rValEl.value) : null;
+                  const cVal = cValEl ? Number(cValEl.value) : null;
+                  // jsPsych.data.write は現在の trial が保存される前に呼べばデータベースに追記できます
+                  jsPsych.data.write({
+                    illusion_value: rVal,
+                    confidence_value: cVal,
+                    left_color: left_color,
+                    right_color: right_color,
+                    model_answer: -a
+                  });
+                  // デバッグ
+                  console.log('button click: wrote to data', {illusion_value: rVal, confidence_value: cVal, model_answer: -a});
+                }, {once: true}); // once: true にして二重書き込みを防止
+              });
+            }
           },
            on_finish: (data) => {
-              // illusion_or_not の on_finish では、スライダー等の値を確実に取得して
-              // このトライアルの data に保存します。model_answer ではこのデータを参照します。
-              const rInput = document.getElementById('r_diff_input_' + i);
-              const cInput = document.getElementById('confidence_input_' + i);
-              data.model_answer = -a;
-              data.left_color = left_color;
-              data.right_color = right_color;
-              data.illusion_value = rInput ? Number(rInput.value) : null;
-              data.confidence_value = cInput ? Number(cInput.value) : null;
-              data.jump_requested = false; // jump フラグは model_answer で決める
-              console.log('illusion on_finish: saved illusion_value:', data.illusion_value, ' confidence:', data.confidence_value);
+              // ここでは必要最低限の情報だけ入れておく（主な値は上の click ハンドラで保存されている想定）
+              data.trial_type = 'illusion_or_not';
+              // jump_requested は model_answer 側で判定する（ジャンプ選択は model_answer に移動したため）
             }
         };
-        // ここでは main timeline ではなく loop_timeline に追加する
-        // 各反復を「ブロック」として登録し、ブロック開始前に continueNested をチェックする
-        // また model_answer は「ループ後のジャンプ」選択肢を持ち、そこで continueNested を false にします
+
         var model_answer = {
             type: jsPsychHtmlButtonResponse,
             stimulus: function() {
-              // 直前トライアル（illusion_or_not）の illusion_value を参照する
+              // 直前トライアルのデータを安全に参照する
               const last_trial = jsPsych.data.get().last(1).values()[0];
-              const last_response = last_trial ? last_trial.illusion_value : 'N/A';
+              // last_trial がない場合や illusion_value が undefined なら 'N/A' 表示
+              const last_response = (last_trial && typeof last_trial.illusion_value !== 'undefined' && last_trial.illusion_value !== null)
+                                     ? last_trial.illusion_value
+                                     : 'N/A';
               return `正答は「${-a}」であり、あなたの回答は ${last_response} です。`;
             },
             name: "model_answer_" + i,
@@ -235,7 +250,6 @@
             },
             on_finish: function(data) {
               // model_answer では、ユーザが "ループ後の質問へジャンプ" を押したかどうかを判定してフラグを立てる
-              // choices の 2 要素目なので response が 1 のときにジャンプ
               if (data.response === 1) {
                 console.log('ユーザが質問へジャンプを要求しました。ネストタイムラインを終了するためのフラグを立てます。');
                 continueNested = false;
@@ -243,7 +257,7 @@
               } else {
                 data.jump_requested = false;
               }
-              // 参考情報を model_answer の data にもコピーしておく（直前トライアルの値）
+              // --- 直前トライアルの値を model_answer の data にもコピーしておく（便利） ---
               const prev = jsPsych.data.get().last(2).values()[0]; // last(2) の 0 番目が illusion_or_not
               if (prev) {
                 data.illusion_value = prev.illusion_value;
@@ -266,10 +280,8 @@
     }
 
     // ループをまとめたネストされた timeline を main timeline に追加する
-    // ここで repetitions を使わず、ループ中に作った複数トライアルをまとめたブロックを一つ配置する形
     timeline.push({
       timeline: loop_timeline
-      // （必要ならここに repetitions: N や loop_function を追加できます）
     });
 
     var equip = {
@@ -293,17 +305,12 @@
             '回答データの送信後、活動報告に記入していただくパスワードが表示されます。</p>',
         choices: ['回答データを送信'],
         on_finish: function() {
-            function escapeCSV(value) {
-              return `"${String(value).replace(/"/g, '""')}"`;
-            }
-
             url = "https://script.google.com/macros/s/AKfycbyui_sjh61KU2998sL6YyN0Q6wG7RdkOTlMwoWnicte0a1lMuKVcwsnK5oTcE5HnmcNzw/exec";
-            //jsPsych.data.displayData();
             
             fetch(url, {
               method: "POST",
               headers: {
-                "Content-Type": "text/plain"  // ← 重要：プリフライト回避
+                "Content-Type": "text/plain"
               },
               body: JSON.stringify({
                 subID: null,
@@ -311,7 +318,7 @@
                 data: jsPsych.data.get().csv()
               })
             })
-            .then(response => response.text())  // ← JSONではなくtextで受け取る
+            .then(response => response.text())
             .then(text => {
               try {
                 const result = JSON.parse(text);
@@ -321,8 +328,6 @@
               }
             })
             .catch(error => console.error("fetch失敗:", error));
-
-            //jsPsychSheet.uploadData(url, jsPsych.data.get().csv(), 0)
         }
     };
     timeline.push(finish);
