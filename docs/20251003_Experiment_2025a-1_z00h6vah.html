@@ -122,152 +122,91 @@
         
         let a = jsPsych.randomization.randomInt(-50, 50);
 
-       let illusion_or_not = {
-          type: jsPsychHtmlButtonResponse,
-          name: 'illusion_or_not', // ← ここでトライアルに name を付与（filter 用）
-          stimulus: `
-            <div style="width:100%; max-width:720px; margin: 0 auto;">
-              <p style="text-align:center;">
-                画像に示された2つの図形について、大きさが等しいと感じるようにスライダーの示す値を調整し、"次に進む"を押してください。
-              </p>
-              <div style="display:flex; justify-content:center;">
-                <canvas id="illusion_canvas_${i}" width="800" height="400" style="background:white; border:1px solid #ccc;"></canvas>
-              </div>
-        
-              <!-- input と表示 span に固有 id を付与 -->
-              <input type="range" id="r_diff_input_${i}" name="q1" min="-50" max="50" value="0" step="1" style="width:100%;">
-              <div style="text-align:center; margin-top: 1em;">
-                現在のスライダーの値: <span id="r_diff_value_${i}">0</span>
-              </div>
-        
-              <p>直前の質問が正しい確率について、自己評価したものを回答してください。</p>
-              <input type="range" id="confidence_input_${i}" name="q2" min="0" max="100" value="50" step="1" style="width:100%;">
-              <div style="text-align:center; margin-top: 1em;">
-                現在のスライダーの値: <span id="confidence_value_${i}">50</span>%
-              </div>
-            </div>
-          `,
-          // choices: '次に進む' のみ（ジャンプ選択は model_answer に移動）
-          choices: ['次に進む'],
-          on_load: function() {
-            let base_radius = 100;
-            let offset = a;
-            function drawIllusion(r_diff) {
-              let canvas = document.getElementById('illusion_canvas_' + i);
-              if (!canvas) return;
-              let ctx = canvas.getContext('2d');
-              ctx.clearRect(0,0,canvas.width,canvas.height);
-              // 左円
-              ctx.beginPath();
-              ctx.arc(250, 200, base_radius - offset - Number(r_diff), 0, 2 * Math.PI);
-              ctx.fillStyle = left_color;
-              ctx.globalAlpha = 1.0;
-              ctx.fill();
-              ctx.strokeStyle = left_color;
-              ctx.stroke();
-              // 右円
-              ctx.beginPath();
-              ctx.arc(550, 200, base_radius + offset + Number(r_diff), 0, 2 * Math.PI);
-              ctx.fillStyle = right_color;
-              ctx.globalAlpha = 1.0;
-              ctx.fill();
-              ctx.strokeStyle = right_color;
-              ctx.stroke();
-            }
-            drawIllusion(0);
-        
-            // 固有 id で input と span を取得してイベント登録する（グローバルな querySelector を使わない）
-            const rInput = document.getElementById('r_diff_input_' + i);
-            const rSpan = document.getElementById('r_diff_value_' + i);
-            if (rInput && rSpan) {
-              rInput.addEventListener('input', function() {
-                drawIllusion(this.value);
-                rSpan.textContent = this.value;
-              });
-              // 初期表示を確実に設定
-              rSpan.textContent = rInput.value;
-            }
-        
-            const cInput = document.getElementById('confidence_input_' + i);
-            const cSpan = document.getElementById('confidence_value_' + i);
-            if (cInput && cSpan) {
-              cInput.addEventListener('input', function() {
-                cSpan.textContent = this.value;
-              });
-              cSpan.textContent = cInput.value;
-            }
-
-            // ---- 重要: ボタンが押された直後にスライダー値をデータに保存する ----
-            // 表示中のボタン要素を取得（この on_load 実行時点ではボタンが生成済み）
-            const displayEl = jsPsych.getDisplayElement();
-            const buttons = displayEl.querySelectorAll('.jspsych-btn');
-            if (buttons && buttons.length > 0) {
-              buttons.forEach((btn) => {
-                // クリック時にスライダーの現在値を jsPsych.data に確実に書き込む
-                btn.addEventListener('click', function() {
-                  const rValEl = document.getElementById('r_diff_input_' + i);
-                  const cValEl = document.getElementById('confidence_input_' + i);
-                  const rVal = rValEl ? Number(rValEl.value) : null;
-                  const cVal = cValEl ? Number(cValEl.value) : null;
-                  // jsPsych.data.write は現在の trial が保存される前に呼べばデータベースに追記できます
-                  jsPsych.data.write({
-                    illusion_value: rVal,
-                    confidence_value: cVal,
-                    left_color: left_color,
-                    right_color: right_color,
-                    model_answer: -a
-                  });
-                  // デバッグ
-                  console.log('button click: wrote to data', {illusion_value: rVal, confidence_value: cVal, model_answer: -a});
-                }, {once: true}); // once: true にして二重書き込みを防止
-              });
-            }
-          },
-           on_finish: (data) => {
-              // ここでは必要最低限の情報だけ入れておく（主な値は上の click ハンドラで保存されている想定）
-              data.trial_type = 'illusion_or_not';
-              // jump_requested は model_answer 側で判定する（ジャンプ選択は model_answer に移動したため）
-            }
+        var illusion_or_not = {
+              type: jsPsychHtmlButtonResponse,
+              name: 'illusion_or_not',
+              stimulus: `
+                <div style="width:100%; max-width:720px; margin: 0 auto;">
+                  <p style="text-align:center;">
+                    画像に示された2つの図形について、大きさが等しいと感じるようにスライダーの示す値を調整し、"次に進む"を押してください。
+                  </p>
+                  <div style="display:flex; justify-content:center;">
+                    <canvas id="illusion_canvas_${i}" width="800" height="400" style="background:white; border:1px solid #ccc;"></canvas>
+                  </div>
+                  <input type="range" id="r_diff_input_${i}" min="-50" max="50" value="0" step="1" style="width:100%;">
+                  <div style="text-align:center; margin-top: 1em;">現在のスライダーの値: <span id="r_diff_value_${i}">0</span></div>
+            
+                  <p>直前の質問が正しい確率について、自己評価したものを回答してください。</p>
+                  <input type="range" id="confidence_input_${i}" min="0" max="100" value="50" step="1" style="width:100%;">
+                  <div style="text-align:center; margin-top: 1em;">現在のスライダーの値: <span id="confidence_value_${i}">50</span>%</div>
+                </div>
+              `,
+              choices: ['次に進む'],
+              on_load: function() {
+                let base_radius = 100;
+                let offset = a;
+                function drawIllusion(r_diff) {
+                  let canvas = document.getElementById('illusion_canvas_' + i);
+                  if (!canvas) return;
+                  let ctx = canvas.getContext('2d');
+                  ctx.clearRect(0,0,canvas.width,canvas.height);
+                  ctx.beginPath();
+                  ctx.arc(250, 200, base_radius - offset - Number(r_diff), 0, 2 * Math.PI);
+                  ctx.fillStyle = left_color;
+                  ctx.fill();
+                  ctx.beginPath();
+                  ctx.arc(550, 200, base_radius + offset + Number(r_diff), 0, 2 * Math.PI);
+                  ctx.fillStyle = right_color;
+                  ctx.fill();
+                }
+                drawIllusion(0);
+            
+                // スライダーの値をリアルタイムに反映
+                const rInput = document.getElementById('r_diff_input_' + i);
+                const rSpan = document.getElementById('r_diff_value_' + i);
+                const cInput = document.getElementById('confidence_input_' + i);
+                const cSpan = document.getElementById('confidence_value_' + i);
+                rInput.addEventListener('input', () => {
+                  drawIllusion(rInput.value);
+                  rSpan.textContent = rInput.value;
+                });
+                cInput.addEventListener('input', () => {
+                  cSpan.textContent = cInput.value;
+                });
+              },
+              on_finish: function(data) {
+                // on_finish で確実にデータを書き込む
+                const rVal = Number(document.getElementById('r_diff_input_' + i).value);
+                const cVal = Number(document.getElementById('confidence_input_' + i).value);
+                data.illusion_value = rVal;
+                data.confidence_value = cVal;
+                data.left_color = left_color;
+                data.right_color = right_color;
+                data.model_answer = -a;
+              }
         };
-
+        
         var model_answer = {
-            type: jsPsychHtmlButtonResponse,
-            stimulus: function() {
-              // 直前トライアルのデータを安全に参照する
-              const last_trial = jsPsych.data.get().last(1).values()[0];
-              // last_trial がない場合や illusion_value が undefined なら 'N/A' 表示
-              const last_response = (last_trial && typeof last_trial.illusion_value !== 'undefined' && last_trial.illusion_value !== null)
-                                     ? last_trial.illusion_value
-                                     : 'N/A';
-              return `正答は「${-a}」であり、あなたの回答は ${last_response} です。`;
-            },
-            name: "model_answer_" + i,
-            // ここでジャンプ用の選択肢を追加
-            choices: ['次に進む', 'ループ後の質問へジャンプ'],
-            // model_answer 自体も、illusion が既にジャンプを要求している場合はスキップ
-            conditional_function: function() {
-              return continueNested; // illusion 側でフラグが false になっていたらここでスキップ
-            },
-            on_finish: function(data) {
-              // model_answer では、ユーザが "ループ後の質問へジャンプ" を押したかどうかを判定してフラグを立てる
-              if (data.response === 1) {
-                console.log('ユーザが質問へジャンプを要求しました。ネストタイムラインを終了するためのフラグを立てます。');
-                continueNested = false;
-                data.jump_requested = true;
-              } else {
-                data.jump_requested = false;
-              }
-              // --- 直前トライアルの値を model_answer の data にもコピーしておく（便利） ---
-              const prev = jsPsych.data.get().last(2).values()[0]; // last(2) の 0 番目が illusion_or_not
-              if (prev) {
-                data.illusion_value = prev.illusion_value;
-                data.confidence_value = prev.confidence_value;
-                data.left_color = prev.left_color;
-                data.right_color = prev.right_color;
-                data.model_answer = prev.model_answer;
-              }
+          type: jsPsychHtmlButtonResponse,
+          stimulus: function() {
+            const last_trial = jsPsych.data.get().last(1).values()[0];
+            const illusion_value = last_trial.illusion_value ?? 'N/A';
+            const correct = last_trial.model_answer ?? 'N/A';
+            return `正答は「${correct}」であり、あなたの回答は ${illusion_value} です。`;
+          },
+          name: "model_answer_" + i,
+          choices: ['次に進む', 'ループ後の質問へジャンプ'],
+          conditional_function: () => continueNested,
+          on_finish: function(data) {
+            if (data.response === 1) {
+              continueNested = false;
+              data.jump_requested = true;
+            } else {
+              data.jump_requested = false;
             }
+          }
         };
+
 
         // 各反復を「ブロック」にして追加する
         loop_timeline.push({
