@@ -53,7 +53,7 @@
                     word-wrap: break-word; /* 必要に応じて追加 */
                     }
                 </style>
-                 <pre style="text-align:left;">
+                <pre style="text-align:left;">
 （下にスクロールして読み進め、アンケートに進む場合はページ下部のボタンを押してください。）
 <strong>参加者の皆様へ。</strong>
 
@@ -151,8 +151,8 @@
               </div>
             </div>
           `,
-          // ここで「質問へジャンプ」ボタンを追加（2つ目のボタン）
-          choices: ['次に進む', 'ループ後の質問へジャンプ'],
+          // "ループ後の質問へジャンプ" をここから削除し、model_answer に移動しました
+          choices: ['次に進む'],
           on_load: function() {
             let base_radius = 100;
             let offset = a;
@@ -202,30 +202,22 @@
             }
           },
            on_finish: (data) => {
-              const rEl = document.getElementById('r_diff_value_' + i);
-              const cEl = document.getElementById('confidence_value_' + i);
+              // illusion_or_not の on_finish では、スライダー等の値を確実に取得して
+              // このトライアルの data に保存します。model_answer ではこのデータを参照します。
+              const rInput = document.getElementById('r_diff_input_' + i);
+              const cInput = document.getElementById('confidence_input_' + i);
               data.model_answer = -a;
               data.left_color = left_color;
               data.right_color = right_color;
-              data.illusion_value = rEl ? Number(rEl.value) : null;
-              data.confidence_value = cEl ? Number(cEl.value) : null;
-              console.log('saved illusion_value:', data.illusion_value);
-
-              // 追加処理：ユーザが「ループ後の質問へジャンプ」を押したかどうかを判定
-              // choices の 2 要素目なので response が 1 のときにジャンプ
-              if (data.response === 1) {
-                console.log('ユーザが質問へジャンプを要求しました。ネストタイムラインを終了するためのフラグを立てます。');
-                // endCurrentTimeline が undefined の環境の代替：フラグを false にする
-                continueNested = false;
-                data.jump_requested = true;
-              } else {
-                data.jump_requested = false;
-              }
+              data.illusion_value = rInput ? Number(rInput.value) : null;
+              data.confidence_value = cInput ? Number(cInput.value) : null;
+              data.jump_requested = false; // jump フラグは model_answer で決める
+              console.log('illusion on_finish: saved illusion_value:', data.illusion_value, ' confidence:', data.confidence_value);
             }
         };
         // ここでは main timeline ではなく loop_timeline に追加する
         // 各反復を「ブロック」として登録し、ブロック開始前に continueNested をチェックする
-        // また model_answer は illusion の直後に実行するが、illusion の on_finish で continueNested が false になった場合にスキップされるよう individual conditional をつける
+        // また model_answer は「ループ後のジャンプ」選択肢を持ち、そこで continueNested を false にします
         var model_answer = {
             type: jsPsychHtmlButtonResponse,
             stimulus: function() {
@@ -235,10 +227,31 @@
               return `正答は「${-a}」であり、あなたの回答は ${last_response} です。`;
             },
             name: "model_answer_" + i,
-            choices: ['次に進む'],
-            // この trial 自体も、illusion が「ジャンプ」を要求した場合はスキップされる
+            // ここでジャンプ用の選択肢を追加
+            choices: ['次に進む', 'ループ後の質問へジャンプ'],
+            // model_answer 自体も、illusion が既にジャンプを要求している場合はスキップ
             conditional_function: function() {
               return continueNested; // illusion 側でフラグが false になっていたらここでスキップ
+            },
+            on_finish: function(data) {
+              // model_answer では、ユーザが "ループ後の質問へジャンプ" を押したかどうかを判定してフラグを立てる
+              // choices の 2 要素目なので response が 1 のときにジャンプ
+              if (data.response === 1) {
+                console.log('ユーザが質問へジャンプを要求しました。ネストタイムラインを終了するためのフラグを立てます。');
+                continueNested = false;
+                data.jump_requested = true;
+              } else {
+                data.jump_requested = false;
+              }
+              // 参考情報を model_answer の data にもコピーしておく（直前トライアルの値）
+              const prev = jsPsych.data.get().last(2).values()[0]; // last(2) の 0 番目が illusion_or_not
+              if (prev) {
+                data.illusion_value = prev.illusion_value;
+                data.confidence_value = prev.confidence_value;
+                data.left_color = prev.left_color;
+                data.right_color = prev.right_color;
+                data.model_answer = prev.model_answer;
+              }
             }
         };
 
