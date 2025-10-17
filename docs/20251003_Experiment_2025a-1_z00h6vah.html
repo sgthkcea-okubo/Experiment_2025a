@@ -207,7 +207,7 @@
               data.confidence_value = cEl ? Number(cEl.value) : null;
               console.log('saved illusion_value:', data.illusion_value);
 
-              // 追加処理：ユーザが「質問へジャンプ」を押したかどうかを判定
+              // 追加処理：ユーザが「ループ後の質問へジャンプ」を押したかどうかを判定
               // choices の 2 要素目なので response が 1 のときにジャンプ
               if (data.response === 1) {
                 console.log('ユーザが質問へジャンプを要求しました。ネストタイムラインを終了します。');
