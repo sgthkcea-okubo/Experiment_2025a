@@ -57,23 +57,23 @@
 （下にスクロールして読み進め、アンケートに進む場合はページ下部のボタンを押してください。）
 <strong>参加者の皆様へ。</strong>
 
-この研究にご参加いただき、ありがとうございます。この研究は、みなさんの知覚経験と信念の関連を調べるものです。 この調査の結果は、哲学的理論の構築や批判に寄与することになります。
+この研究にご参加いただき、ありがとうございます。この研究は、みなさんの知覚経験と信念の関連を調べるものです。 この調査の結果は、哲学的�[...]
 
 <strong>自主的な参加と秘密保持</strong>
 
-この研究への参加は完全に任意であり、参加を拒否することも、また、いつでも、いかなる理由でも、ペナルティなしに参加を撤回することができます。
+この研究への参加は完全に任意であり、参加を拒否することも、また、いつでも、いかなる理由でも、ペナルティなしに参加を撤回することができ��[...]
 
-この研究への参加は秘密厳守です。あなたが提供した情報には、この研究に携わる研究者と研究責任者のみがアクセスすることができます。また、データの分析はすべて集計された上で行われます。つまり、すべての参加者のデータの集計値が分析され、あなたの個々の回答が具体的に分析されることは決してありません。さらに、研究結果の公表はすべて匿名とし、個人を特定できるような情報がデータに関連付けられることはありません。
+この研究への参加は秘密厳守です。あなたが提供した情報には、この研究に携わる研究者と研究責任者のみがアクセスすることができます。また、��[...]
 
 <strong>匿名データセットの保存</strong>
 
-論文公開後は、この研究で収集された情報は、完全に匿名化された上で、オープンサイエンス・フレームワークなどのオンラインデータリポジトリを通じて一般に公開されます。これにより、質の高い科学研究に貢献することができます。例えば、他の研究者は、実施した分析を繰り返したり、別の仮説を検証したりすることができます。
+論文公開後は、この研究で収集された情報は、完全に匿名化された上で、オープンサイエンス・フレームワークなどのオンラインデータリポジトリ��[...]
 
 -----------------------------
 
 <strong>インフォームドコンセント</strong>
 
-私は、本研究の内容と目的について十分に説明され、本研究に参加することに同意します。私は、ペナルティを負うことなく、いつでも自由に参加を取りやめることができることを理解しています。
+私は、本研究の内容と目的について十分に説明され、本研究に参加することに同意します。私は、ペナルティを負うことなく、いつでも自由に参加��[...]
                 </pre>
             </div>`,
         choices: ['アンケートに進む']
@@ -100,7 +100,11 @@
     // こうしてネストされた timeline ブロックにまとめることで、
     // 内側のトライアルから jsPsych.endCurrentTimeline() を呼ぶと
     // 以降のループ反復をスキップしてネストブロックの後へジャンプできます。
+    // （ただし endCurrentTimeline が undefined の環境では代わりにフラグ制御を行う）
     var loop_timeline = [];
+
+    // 継続フラグ（endCurrentTimeline が無い場合の代替）
+    var continueNested = true;
 
     for (let i = 0; i < num_of_loops; i++) {
 
@@ -210,25 +214,42 @@
               // 追加処理：ユーザが「ループ後の質問へジャンプ」を押したかどうかを判定
               // choices の 2 要素目なので response が 1 のときにジャンプ
               if (data.response === 1) {
-                console.log('ユーザが質問へジャンプを要求しました。ネストタイムラインを終了します。');
-                // ネストされた timeline を終了 → main timeline の次の要素（ループ後の質問）へ移動
-                jsPsych.endCurrentTimeline();
+                console.log('ユーザが質問へジャンプを要求しました。ネストタイムラインを終了するためのフラグを立てます。');
+                // endCurrentTimeline が undefined の環境の代替：フラグを false にする
+                continueNested = false;
+                data.jump_requested = true;
+              } else {
+                data.jump_requested = false;
               }
             }
         };
         // ここでは main timeline ではなく loop_timeline に追加する
-        loop_timeline.push(illusion_or_not);
-
+        // 各反復を「ブロック」として登録し、ブロック開始前に continueNested をチェックする
+        // また model_answer は illusion の直後に実行するが、illusion の on_finish で continueNested が false になった場合にスキップされるよう individual conditional をつける
         var model_answer = {
             type: jsPsychHtmlButtonResponse,
             stimulus: function() {
-              const last_response = jsPsych.data.get().last(3).values()[0].response;
+              // 直前トライアル（illusion_or_not）の illusion_value を参照する
+              const last_trial = jsPsych.data.get().last(1).values()[0];
+              const last_response = last_trial ? last_trial.illusion_value : 'N/A';
               return `正答は「${-a}」であり、あなたの回答は ${last_response} です。`;
             },
             name: "model_answer_" + i,
-            choices: ['次に進む']
+            choices: ['次に進む'],
+            // この trial 自体も、illusion が「ジャンプ」を要求した場合はスキップされる
+            conditional_function: function() {
+              return continueNested; // illusion 側でフラグが false になっていたらここでスキップ
+            }
         };
-        loop_timeline.push(model_answer);
+
+        // 各反復を「ブロック」にして追加する
+        loop_timeline.push({
+          timeline: [illusion_or_not, model_answer],
+          conditional_function: function() {
+            // ブロックが始まる直前に判定。前の反復で continueNested が false なら以降のブロックは実行されない
+            return continueNested;
+          }
+        });
     }
 
     // ループをまとめたネストされた timeline を main timeline に追加する
