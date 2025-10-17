@@ -126,6 +126,7 @@
 
        let illusion_or_not = {
           type: jsPsychHtmlButtonResponse,
+          name: 'illusion_or_not', // ← ここでトライアルに name を付与（filter 用）
           stimulus: `
             <div style="width:100%; max-width:720px; margin: 0 auto;">
               <p style="text-align:center;">
@@ -198,12 +199,14 @@
             }
           },
           on_finish: (data) => {
+            // 重要: DOM 要素そのものではなく .value を保存する
+            const rEl = document.getElementById('r_diff_input_' + i);
+            const cEl = document.getElementById('confidence_input_' + i);
             data.model_answer = -a;
             data.left_color = left_color;
             data.right_color = right_color;
-            // ここでも必ず input の value を読む（span ではない）
-            data.illusion_value = document.getElementById('r_diff_input_' + i);
-            data.confidence_value = document.getElementById('confidence_input_' + i);
+            data.illusion_value = rEl ? rEl.value : null;         // ← 修正: .value を保存
+            data.confidence_value = cEl ? cEl.value : null;       // ← 修正: .value を保存
           }
         };
         timeline.push(illusion_or_not);
