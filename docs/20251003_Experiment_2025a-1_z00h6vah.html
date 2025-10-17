@@ -198,34 +198,34 @@
               cSpan.textContent = cInput.value;
             }
           },
-          on_finish: (data) => {
-            // 重要: DOM 要素そのものではなく .value を保存する
-            const rEl = document.getElementById('r_diff_input_' + i);
-            const cEl = document.getElementById('confidence_input_' + i);
-            data.model_answer = -a;
-            data.left_color = left_color;
-            data.right_color = right_color;
-            data.illusion_value = rEl ? rEl.value : null;         // ← 修正: .value を保存
-            data.confidence_value = cEl ? cEl.value : null;       // ← 修正: .value を保存
-          }
+           on_finish: (data) => {
+              const rEl = document.getElementById('r_diff_input_' + i);
+              const cEl = document.getElementById('confidence_input_' + i);
+              data.model_answer = -a;
+              data.left_color = left_color;
+              data.right_color = right_color;
+              // ← ここを変更：DOM 要素ではなく value を保存する
+              data.illusion_value = rEl ? Number(rEl.value) : null;        // 数値として格納したいなら Number()
+              data.confidence_value = cEl ? Number(cEl.value) : null;
+              console.log('saved illusion_value:', data.illusion_value);
+            }
         };
         timeline.push(illusion_or_not);
 
         var model_answer = {
-          type: jsPsychHtmlButtonResponse,
-          stimulus: function() {
-            // name:'illusion_or_not' でフィルタして直近の1件を取得
-            const prev = jsPsych.data.get()
-              .filter({ name: 'illusion_or_not' })
-              .last(1)
-              .values()[0];
-        
-            // prev が存在すれば illusion_value を使う（無ければフォールバック）
-            const last_response = prev && prev.illusion_value !== undefined ? prev.illusion_value : '(データなし)';
-            return `正答は「${-a}」であり、あなたの回答は ${last_response} です。`;
-          },
-          name: "model_answer_" + i,
-          choices: ['次に進む']
+            type: jsPsychHtmlButtonResponse,
+            stimulus: function() {
+              // name:'illusion_or_not' でフィルタして直近の1件を取得
+              const prev = jsPsych.data.get()
+                .filter({ name: 'illusion_or_not' })
+                .last(1)
+                .values()[0];
+            
+              const last_response = (prev && prev.illusion_value != null) ? prev.illusion_value : '(データなし)';
+              return `正答は「${-a}」であり、あなたの回答は ${last_response} です。`;
+            },
+            name: "model_answer_" + i,
+            choices: ['次に進む']
         };
         timeline.push(model_answer);
     }
