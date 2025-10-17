@@ -235,29 +235,6 @@
         timeline.push(model_answer);
     }
 
-    var age = {
-        type: jsPsychSurveyText,
-        questions: [
-            { prompt: '年齢を入力してください', columns: 3, required: true, name: 'age' },
-        ],
-        button_label: '次へ',
-    };
-    timeline.push(age);
-
-    var gender = {
-        type: jsPsychSurveyMultiChoice,
-        questions: [
-            {prompt: "性別を選択してください",
-             options: jsPsych.randomization.repeat(['男性', '女性', 'その他'], 1),
-             required: true,
-             horizontal: true,
-             name: 'gender' 
-            },
-        ],
-        button_label: '次へ',
-    };
-    timeline.push(gender);
-
     var finish = {
         type: jsPsychHtmlButtonResponse,
         stimulus: '<p>これでアンケートは終わりです。<br>' +
