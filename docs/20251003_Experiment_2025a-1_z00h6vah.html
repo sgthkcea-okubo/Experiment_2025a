@@ -202,10 +202,8 @@
             data.left_color = left_color;
             data.right_color = right_color;
             // ここでも必ず input の value を読む（span ではない）
-            const rValEl = document.getElementById('r_diff_input_' + i);
-            const cValEl = document.getElementById('confidence_input_' + i);
-            data.illusion_value = rValEl ? rValEl.value : null;
-            data.confidence_value = cValEl ? cValEl.value : null;
+            data.illusion_value = document.getElementById('r_diff_input_' + i);
+            data.confidence_value = document.getElementById('confidence_input_' + i);
           }
         };
         timeline.push(illusion_or_not);
