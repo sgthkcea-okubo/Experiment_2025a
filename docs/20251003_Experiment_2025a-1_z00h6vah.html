@@ -183,13 +183,13 @@
               btn.addEventListener('click', () => {
                 const rVal = Number(rInput.value);
                 const cVal = Number(cInput.value);
-                jsPsych.data.addProperties({
-                  illusion_value: rVal,
-                  confidence_value: cVal,
-                  left_color: left_color,
-                  right_color: right_color,
-                  model_answer: -a
-                });
+                // クリック時に現在の trial データに直接追加
+                const current = jsPsych.data.get().last(1).values()[0];
+                current.illusion_value = rVal;
+                current.confidence_value = cVal;
+                current.left_color = left_color;
+                current.right_color = right_color;
+                current.correct_answer = -a; // 正答（model_answerではなくこちらの名前に）
               }, { once: true });
             });
           },
@@ -200,13 +200,13 @@
         };
 
         
-        var model_answer = {
+        const model_answer = {
           type: jsPsychHtmlButtonResponse,
           stimulus: function() {
             const last_trial = jsPsych.data.get().last(1).values()[0];
             const illusion_value = last_trial.illusion_value ?? 'N/A';
-            const correct = last_trial.model_answer ?? 'N/A';
-            return `正答は「${correct}」であり、あなたの回答は ${illusion_value} です。`;
+            const correct = last_trial.correct_answer ?? 'N/A';
+            return `正答は ${correct} であり、あなたの回答は ${illusion_value} です。`;
           },
           name: "model_answer_" + i,
           choices: ['次に進む', 'ループ後の質問へジャンプ'],
@@ -220,6 +220,7 @@
             }
           }
         };
+
 
 
 
