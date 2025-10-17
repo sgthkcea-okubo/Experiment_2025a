@@ -41,14 +41,6 @@
         timeline: timeline,
     });
 
-    // window.callbackContinue = function (response) {
-    //      console.log(response);
-    // }
-
-    // var ajaxOptions;
-
-    // $.ajax('https://script.google.com/macros/s/AKfycbzjAau7lzcw-SGlWbOdGQ27T_f1tTS0gG20t0g7ZyZJEUiVVksEmrzWkZUF6K4_Hrmj/exec?callback=callbackContinue', ajaxOptions);
-
     var condition = 0
 
     var welcome = {
@@ -65,23 +57,23 @@
 （下にスクロールして読み進め、アンケートに進む場合はページ下部のボタンを押してください。）
 <strong>参加者の皆様へ。</strong>
 
-この研究にご参加いただき、ありがとうございます。この研究は、みなさんの知覚経験と信念の関連を調べるものです。 この調査の結果は、哲学的理論の構築や批判に寄与することになります。
+この研究にご参加いただき、ありがとうございます。この研究は、みなさんの知覚経験と信念の関連を調べるものです。 この調査の結果は、哲学的�[...]
 
 <strong>自主的な参加と秘密保持</strong>
 
-この研究への参加は完全に任意であり、参加を拒否することも、また、いつでも、いかなる理由でも、ペナルティなしに参加を撤回することができます。
+この研究への参加は完全に任意であり、参加を拒否することも、また、いつでも、いかなる理由でも、ペナルティなしに参加を撤回することができ��[...]
 
-この研究への参加は秘密厳守です。あなたが提供した情報には、この研究に携わる研究者と研究責任者のみがアクセスすることができます。また、データの分析はすべて集計された上で行われます。つまり、すべての参加者のデータの集計値が分析され、あなたの個々の回答が具体的に分析されることは決してありません。さらに、研究結果の公表はすべて匿名とし、個人を特定できるような情報がデータに関連付けられることはありません。
+この研究への参加は秘密厳守です。あなたが提供した情報には、この研究に携わる研究者と研究責任者のみがアクセスすることができます。また、��[...]
 
 <strong>匿名データセットの保存</strong>
 
-論文公開後は、この研究で収集された情報は、完全に匿名化された上で、オープンサイエンス・フレームワークなどのオンラインデータリポジトリを通じて一般に公開されます。これにより、質の高い科学研究に貢献することができます。例えば、他の研究者は、実施した分析を繰り返したり、別の仮説を検証したりすることができます。
+論文公開後は、この研究で収集された情報は、完全に匿名化された上で、オープンサイエンス・フレームワークなどのオンラインデータリポジトリ��[...]
 
 -----------------------------
 
 <strong>インフォームドコンセント</strong>
 
-私は、本研究の内容と目的について十分に説明され、本研究に参加することに同意します。私は、ペナルティを負うことなく、いつでも自由に参加を取りやめることができることを理解しています。
+私は、本研究の内容と目的について十分に説明され、本研究に参加することに同意します。私は、ペナルティを負うことなく、いつでも自由に参加��[...]
                 </pre>
             </div>`,
         choices: ['アンケートに進む']
@@ -103,6 +95,12 @@
     const colorset1 = [colorset1_1, colorset1_2];
 
     const num_of_loops = 2;
+
+    // --- 重要: ループ中のトライアルを一旦この配列にためる ---
+    // こうしてネストされた timeline ブロックにまとめることで、
+    // 内側のトライアルから jsPsych.endCurrentTimeline() を呼ぶと
+    // 以降のループ反復をスキップしてネストブロックの後へジャンプできます。
+    var loop_timeline = [];
 
     for (let i = 0; i < num_of_loops; i++) {
 
@@ -149,7 +147,8 @@
               </div>
             </div>
           `,
-          choices: ['次に進む'],
+          // ここで「質問へジャンプ」ボタンを追加（2つ目のボタン）
+          choices: ['次に進む', '質問へジャンプ'],
           on_load: function() {
             let base_radius = 100;
             let offset = a;
@@ -204,13 +203,21 @@
               data.model_answer = -a;
               data.left_color = left_color;
               data.right_color = right_color;
-              // ← ここを変更：DOM 要素ではなく value を保存する
-              data.illusion_value = rEl ? Number(rEl.value) : null;        // 数値として格納したいなら Number()
+              data.illusion_value = rEl ? Number(rEl.value) : null;
               data.confidence_value = cEl ? Number(cEl.value) : null;
               console.log('saved illusion_value:', data.illusion_value);
+
+              // 追加処理：ユーザが「質問へジャンプ」を押したかどうかを判定
+              // choices の 2 要素目なので response が 1 のときにジャンプ
+              if (data.response === 1) {
+                console.log('ユーザが質問へジャンプを要求しました。ネストタイムラインを終了します。');
+                // ネストされた timeline を終了 → main timeline の次の要素（ループ後の質問）へ移動
+                jsPsych.endCurrentTimeline();
+              }
             }
         };
-        timeline.push(illusion_or_not);
+        // ここでは main timeline ではなく loop_timeline に追加する
+        loop_timeline.push(illusion_or_not);
 
         var model_answer = {
             type: jsPsychHtmlButtonResponse,
@@ -221,8 +228,15 @@
             name: "model_answer_" + i,
             choices: ['次に進む']
         };
-        timeline.push(model_answer);
+        loop_timeline.push(model_answer);
     }
+
+    // ループをまとめたネストされた timeline を main timeline に追加する
+    // ここで repetitions を使わず、ループ中に作った複数トライアルをまとめたブロックを一つ配置する形
+    timeline.push({
+      timeline: loop_timeline
+      // （必要ならここに repetitions: N や loop_function を追加できます）
+    });
 
     var finish = {
         type: jsPsychHtmlButtonResponse,
