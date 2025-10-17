@@ -94,7 +94,7 @@
     const colorset1_2 = ["yellow"];
     const colorset1 = [colorset1_1, colorset1_2];
 
-    const num_of_loops = 2;
+    const num_of_loops = 100;
 
     // --- 重要: ループ中のトライアルを一旦この配列にためる ---
     // こうしてネストされた timeline ブロックにまとめることで、
@@ -202,8 +202,8 @@
             }
           },
            on_finish: (data) => {
-              const rEl = document.getElementById('r_diff_input_' + i);
-              const cEl = document.getElementById('confidence_input_' + i);
+              const rEl = document.getElementById('r_diff_value_' + i);
+              const cEl = document.getElementById('confidence_value_' + i);
               data.model_answer = -a;
               data.left_color = left_color;
               data.right_color = right_color;
