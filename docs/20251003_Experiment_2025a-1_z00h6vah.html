@@ -139,7 +139,7 @@
               <p>上記質問への回答内容について、自身の度合いを自己評価したものを回答してください。</p>
               <input type="range" id="confidence_input_${i}" min="1" max="7" value="4" step="1" style="width:100%;">
               <span class="label-right">自信が無い</span>
-              <div style="text-align:center; margin-top: 1em;">現在のスライダーの値: <span id="confidence_value_${i}">50</span>%</div>
+              <div style="text-align:center; margin-top: 1em;">現在のスライダーの値: <span id="confidence_value_${i}">50</span></div>
               <span class="label-right">自信が有る</span>
             </div>
           `,
@@ -205,7 +205,7 @@
         var model_answer = {
           type: jsPsychHtmlButtonResponse,
           stimulus: function() {
-            const last_trial = jsPsych.data.get().last(2).values()[0];
+            const last_trial = jsPsych.data.get().last(1).values()[0];
             const illusion_value = last_trial.illusion_value ?? 'N/A';
             const correct = last_trial.model_answer ?? 'N/A';
             return `正答は「${correct}」であり、あなたの回答は ${illusion_value} です。`;
