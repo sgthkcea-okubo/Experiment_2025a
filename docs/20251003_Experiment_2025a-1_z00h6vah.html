@@ -203,9 +203,11 @@
         var model_answer = {
           type: jsPsychHtmlButtonResponse,
           stimulus: function() {
-            const last_trial = jsPsych.data.get().last(1).values()[0];
-            const illusion_value = last_trial.illusion_value ?? 'N/A';
-            const correct = last_trial.model_answer ?? 'N/A';
+            const all_data = jsPsych.data.get().filter({ name: 'illusion_or_not' }).values();
+            const i = all_data.length;
+            const prev = all_data[i] ?? {};
+            const illusion_value = prev.illusion_value ?? 'N/A';
+            const correct = prev.model_answer ?? 'N/A';
             return `正答は「${correct}」であり、あなたの回答は ${illusion_value} です。`;
           },
           name: "model_answer_" + i,
