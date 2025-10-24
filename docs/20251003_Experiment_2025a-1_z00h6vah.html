@@ -230,8 +230,7 @@
             const last_trial = jsPsych.data.get().last(2).values()[0];
             const illusion_value = last_trial.illusion_value ?? 'N/A';
             const correct = last_trial.model_answer ?? 'N/A';
-            const rInput = document.getElementById('r_diff_input_' + i);
-            return `正答は「${-a}」であり、あなたの回答は ${Number(rInput.value)} です。`;
+            return `正答は「${-a}」であり、あなたの回答は ${illusion_value} です。`;
           },
           name: "model_answer_" + i,
           choices: ['次に進む', 'ループ後の質問へジャンプ'],
