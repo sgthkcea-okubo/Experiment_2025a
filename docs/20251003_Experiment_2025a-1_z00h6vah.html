@@ -142,9 +142,11 @@
               <input type="range" id="r_diff_input_${i}" min="-50" max="50" value="0" step="1" style="width:100%;">
               <div style="text-align:center; margin-top: 1em;">現在のスライダーの値: <span id="r_diff_value_${i}">0</span></div>
         
-              <p>直前の質問が正しい確率について、自己評価したものを回答してください。</p>
-              <input type="range" id="confidence_input_${i}" min="0" max="100" value="50" step="1" style="width:100%;">
+              <p>上記質問への回答内容について、自身の度合いを自己評価したものを回答してください。</p>
+              <input type="range" id="confidence_input_${i}" min="1" max="7" value="4" step="1" style="width:100%;">
+              <span class="label-right">自信が無い</span>
               <div style="text-align:center; margin-top: 1em;">現在のスライダーの値: <span id="confidence_value_${i}">50</span>%</div>
+              <span class="label-right">自信が有る</span>
             </div>
           `,
           choices: ['次に進む'],
