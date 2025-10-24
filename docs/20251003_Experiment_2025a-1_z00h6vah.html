@@ -203,7 +203,7 @@
         var model_answer = {
           type: jsPsychHtmlButtonResponse,
           stimulus: function() {
-            const last_trial = jsPsych.data.get().last().values()[0];
+            const last_trial = jsPsych.data.get().last(2).values()[0];
             const illusion_value = last_trial.illusion_value ?? 'N/A';
             const correct = last_trial.model_answer ?? 'N/A';
             return `正答は「${correct}」であり、あなたの回答は ${illusion_value} です。`;
