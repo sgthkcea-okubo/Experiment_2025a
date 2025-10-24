@@ -38,6 +38,14 @@
         .range-container {
           width: 300px;
         }
+        .slider-labels {
+          /* ラベルのコンテナ */
+          display: flex; /* Flexboxを有効化 */
+          justify-content: space-between; /* 子要素を両端に配置 */
+          font-size: 14px;
+          color: #555;
+          margin-bottom: 5px; /* スライダーとの間隔 */
+        }
     </style>
 </head>
 
@@ -156,6 +164,10 @@
                 <span></span>
                 <span>自信が有る</span>
               </div>
+                <div class="slider-labels">
+                    <span>自信が無い</span>
+                    <span>自信が有る</span>
+                 </div>
               <input type="range" id="confidence_input_${i}" min="1" max="7" value="4" step="1" style="width:100%;">
               <div style="text-align:center; margin-top: 1em;">現在のスライダーの値: <span id="confidence_value_${i}">50</span></div>
             </div>
