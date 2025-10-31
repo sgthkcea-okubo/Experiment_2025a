@@ -121,15 +121,11 @@ for(let i=0;i<num_of_loops;i++){
       }
       drawIllusion(0);
       const rInput=document.getElementById('r_diff_input_' + i);
-      const cInput=document.getElementById('confidence_input_' + i);
       rInput.oninput=function(){ illusion_value_map[i]=Number(this.value); document.getElementById('r_diff_value_'+i).textContent=this.value; drawIllusion(Number(this.value)); };
-      cInput.oninput=function(){ confidence_value_map[i]=Number(this.value); document.getElementById('confidence_value_'+i).textContent=this.value; };
       illusion_value_map[i]=Number(rInput.value);
-      confidence_value_map[i]=Number(cInput.value);
     },
     on_finish: function(data){
       data.illusion_value = illusion_value_map[i] ?? null;
-      data.confidence_value = confidence_value_map[i] ?? null;
       data.left_color = left_color_i;
       data.right_color = right_color_i;
       data.model_answer = -a;
