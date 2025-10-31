@@ -96,12 +96,13 @@ for(let i=0;i<num_of_loops;i++){
     type: jsPsychHtmlButtonResponse,
     name: 'illusion_or_not_' + i,
     stimulus: `<div style="max-width:720px; margin:0 auto;">
-      <p>画像に示された2つの図形の大きさをスライダーで調整し、次に進むを押してください。</p>
+      <p>下の画像に示された2つの図形の大きさが等しくなるようスライダー1の値を調整してください。<br>
+      スライダー1の操作が済み次第、「次に進む」のボタンをを押してください。</p>
       <div style="display:flex; justify-content:center;">
         <canvas id="illusion_canvas_${i}" width="800" height="400" style="background:white; border:1px solid #ccc;"></canvas>
       </div>
       <input type="range" id="r_diff_input_${i}" min="-50" max="50" value="0" step="1" style="width:100%;">
-      <div>スライダー値: <span id="r_diff_value_${i}">0</span></div>
+      <div>（スライダー1）上に示された図形の大きさの調整に関する値: <span id="r_diff_value_${i}">0</span></div>
     </div>`,
     choices:['次に進む'],
     on_load: function(){
