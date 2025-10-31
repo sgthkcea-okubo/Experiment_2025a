@@ -160,22 +160,64 @@ for(let i=0;i<num_of_loops;i++){
 }
 
 // 使用機器
-timeline.push({
-  type: jsPsychSurveyMultiChoice,
-  questions:[{prompt:"使用機器を回答してください",
-             options:['デスクトップPC','ノートPC','スマートフォン','その他'],
-             required:true,
-             horizontal:true,
-             name:'device'}],
-  button_label:'次へ'
-});
+ var equip = {
+    type: jsPsychSurveyMultiChoice,
+    questions: [
+        {prompt: "使用機器を回答してください",
+         options: jsPsych.randomization.repeat(['デスクトップPC', 'ノートPC', 'スマートフォン', 'その他'], 1),
+         required: true,
+         horizontal: true,
+         name: 'gender' 
+        },
+    ],
+    button_label: '次へ',
+};
+timeline.push(equip);
 
-// 終了
-timeline.push({
+var finish = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: '<p>これでアンケートは終わりです。<br>' +
+        '以下のボタンから回答を送信してください。<br>' +
+        '回答データの送信後、活動報告に記入していただくパスワードが表示されます。</p>',
+    choices: ['回答データを送信'],
+    on_finish: function() {
+        url = "https://script.google.com/macros/s/AKfycbyui_sjh61KU2998sL6YyN0Q6wG7RdkOTlMwoWnicte0a1lMuKVcwsnK5oTcE5HnmcNzw/exec";
+        
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain"
+          },
+          body: JSON.stringify({
+            subID: null,
+            getSubID: 0,
+            data: jsPsych.data.get().csv()
+          })
+        })
+        .then(response => response.text())
+        .then(text => {
+          try {
+            const result = JSON.parse(text);
+            console.log("成功:", result);
+          } catch (e) {
+            console.error("JSONパース失敗:", text);
+          }
+        })
+        .catch(error => console.error("fetch失敗:", error));
+    }
+};
+timeline.push(finish);
+
+var thanks = {
   type: jsPsychHtmlKeyboardResponse,
-  stimulus:'<p>これでアンケートは終了です。パスワード: xxxxxxxx</p>',
-  choices:'NO_KEYS'
-});
+  stimulus: '<p>これでアンケートは終わりです。<br>' +
+        '以下のパスワードを、記録したうえで、活動報告の欄に入力してください。<br>' +
+        'Pass: xxxxxxxx<br>' +
+        'パスワードの記録が済み次第、タブを閉じ実験への参加を終了してください。<br>' +
+        '実験に参加いただき、ありがとうございました。</p>',
+  choices: 'NO_KEYS'
+};
+timeline.push(thanks);
 
 jsPsych.run(timeline);
 </script>
