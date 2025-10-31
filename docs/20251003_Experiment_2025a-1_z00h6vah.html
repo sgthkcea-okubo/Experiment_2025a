@@ -223,9 +223,12 @@
         var model_answer = {
           type: jsPsychHtmlButtonResponse,
           stimulus: function() {
-            const last_trial = jsPsych.data.get().last().values()[0];
-            const illusion_value = last_trial.illusion_value;
-            const correct = last_trial.model_answer ?? 'N/A';
+            // 「直前の illusion_or_not トライアル」を明示的に取得
+            const last_illusion_trial = jsPsych.data.get().filter({ name: 'illusion_or_not' }).last(1).values()[0];
+        
+            const illusion_value = last_illusion_trial.illusion_value;
+            const correct = last_illusion_trial.model_answer ?? 'N/A';
+        
             return `正答は「${-a}」であり、あなたの回答は ${illusion_value} です。`;
           },
           name: "model_answer_" + i,
@@ -240,6 +243,7 @@
             }
           }
         };
+
 
         timeline.push({
           timeline: [model_answer],
