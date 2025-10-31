@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
-
 <head>
+    <meta charset="UTF-8">
     <title>Experiment_2025a</title>
     <script src="https://unpkg.com/jspsych@8.2.2"></script>
     <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
@@ -16,52 +16,34 @@
     <link rel="stylesheet" href="https://sgthkcea-okubo.github.io/jsPsychSheet/jspsychsheet.css">
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <style>
-        button.jspsych-btn {
-          display: inline-block;
-          min-width: 120px;       /* 横幅の最低限 */
-          height: 48px;           /* タップ領域の高さ（推奨: 44〜48px） */
-          padding: 10px 18px;     /* 内側余白（高さと合わせて調整） */
-          font-size: 18px;        /* テキストを読みやすく */
-          border-radius: 8px;     /* 角丸（任意）*/
-          line-height: 1;         /* 垂直中央揃え */
-          cursor: pointer;
-          -webkit-tap-highlight-color: rgba(0,0,0,0.12); /* タッチの見た目 */
-        }
-       .slider-labels {
-          /* ラベルのコンテナ */
-          display: flex; /* Flexboxを有効化 */
-          justify-content: space-between; /* 子要素を両端に配置 */
-          font-size: 14px;
-          color: #555;
-          margin-bottom: 5px; /* スライダーとの間隔 */
-        }
-    </style>
+<style>
+button.jspsych-btn { min-width: 120px; height:48px; font-size:18px; border-radius:8px; }
+.slider-labels { display:flex; justify-content:space-between; font-size:14px; margin-bottom:5px; }
+</style>
 </head>
-
 <body></body>
-
 <script>
-    // timelineの定義を先に移動
-    var timeline = [];
+const jsPsych = initJsPsych({});
 
-    const jsPsych = initJsPsych({
-        timeline: timeline,
-    });
+let last_illusion_data = null;
+let illusion_value_map = {};
+let confidence_value_map = {};
+let continueNested = true;
 
-    var condition = 1
+let timeline = [];
 
-    var welcome = {
-        type: jsPsychHtmlButtonResponse,
-        stimulus:
-            `<div style="width:100%; max-width:720px;">
-                <style>
-                    pre {
-                    white-space: pre-wrap;
-                    word-wrap: break-word; /* 必要に応じて追加 */
-                    }
-                </style>
-                <pre style="text-align:left;">
+// ウェルカム
+timeline.push({
+  type: jsPsychHtmlButtonResponse,
+  stimulus: 
+    `<div style="width:100%; max-width:720px;">
+      <style>
+          pre {
+          white-space: pre-wrap;
+          word-wrap: break-word; /* 必要に応じて追加 */
+          }
+      </style>
+      <pre style="text-align:left;">
 （下にスクロールして読み進め、アンケートに進む場合はページ下部のボタンを押してください。）
 <strong>参加者の皆様へ。</strong>
 
@@ -82,253 +64,119 @@
 <strong>インフォームドコンセント</strong>
 
 私は、本研究の内容と目的について十分に説明され、本研究に参加することに同意します。私は、ペナルティを負うことなく、いつでも自由に参加を取りやめることができることを理解しています。
-                </pre>
-            </div>`,
-        choices: ['アンケートに進む']
-    };
-    
-    timeline.push(welcome);
+      </pre>
+    </div>`,
+  choices: ['アンケートに進む']
+});
 
-    var name_respondent = {
-      type: jsPsychSurveyText,
-      questions: [
-        {prompt: '回答者の名前を入力してください。'}
-      ]
-    };
-        
-    timeline.push(name_respondent);
-    
-    const colorset1_1 = ["blue", "indigo", "violet"];
-    const colorset1_2 = ["yellow", "yellowgreen", "orange"];
-    const colorset1 = [colorset1_1, colorset1_2];
+// 名前入力
+timeline.push({
+  type: jsPsychSurveyText,
+  questions: [{prompt:'回答者の名前を入力してください。'}]
+});
 
-    const num_of_loops = 100;
+// 色セット
+const colorset1_1 = ["blue","indigo","violet"];
+const colorset1_2 = ["yellow","yellowgreen","orange"];
+const colorset1 = [colorset1_1, colorset1_2];
+const condition = 1;
+const num_of_loops = 100;
 
-    // --- 重要: ループ中のトライアルを一旦この配列にためる ---
-    // var loop_timeline = [];
+for(let i=0;i<num_of_loops;i++){
+  const colorcond1 = jsPsych.randomization.sampleWithReplacement(colorset1,1)[0];
+  const colorcond2 = jsPsych.randomization.sampleWithReplacement(colorset1.filter(c=>c!==colorcond1),1)[0];
+  const color1 = jsPsych.randomization.sampleWithReplacement(colorcond1,1)[0];
+  const color2 = (condition===1) ? jsPsych.randomization.sampleWithReplacement(colorcond2,1)[0]
+                                : jsPsych.randomization.sampleWithReplacement(colorcond1,1)[0];
+  const left_color_i=color1;
+  const right_color_i=color2;
+  const a = jsPsych.randomization.randomInt(-50,50);
 
-    // 継続フラグ（endCurrentTimeline が無い場合の代替）
-    var continueNested = true;
-
-    for (let i = 0; i < num_of_loops; i++) {
-
-        var colorcond1 = jsPsych.randomization.sampleWithReplacement(colorset1, 1)[0];
-        var colorcond2 = jsPsych.randomization.sampleWithReplacement(_.difference(colorset1, [colorcond1]), 1)[0];
-
-        var color1 = jsPsych.randomization.sampleWithReplacement(colorcond1, 1)[0];
-
-        var color2;
-        if (condition == 0) {
-            color2 = jsPsych.randomization.sampleWithReplacement(colorcond1, 1)[0];
-        }
-        else if (condition == 1) {
-            color2 = jsPsych.randomization.sampleWithReplacement(colorcond2, 1)[0];
-        }
-        
-        let left_color = color1;
-        let right_color = color2;
-        
-        let a = jsPsych.randomization.randomInt(-50, 50);
-
-        var illusion_or_not = {
-          type: jsPsychHtmlButtonResponse,
-          name: 'illusion_or_not',
-          stimulus: `
-            <div style="width:100%; max-width:720px; margin: 0 auto;">
-              <p style="text-align:center;">
-                画像に示された2つの図形について、大きさが等しいと感じるようにスライダーの示す値を調整し、"次に進む"を押してください。
-              </p>
-              <div style="display:flex; justify-content:center;">
-                <canvas id="illusion_canvas_${i}" width="800" height="400" style="background:white; border:1px solid #ccc;"></canvas>
-              </div>
-              <input type="range" id="r_diff_input_${i}" min="-50" max="50" value="0" step="1" style="width:100%;">
-              <div style="text-align:center; margin-top: 1em;">現在のスライダーの値: <span id="r_diff_value_${i}">0</span></div>
-        
-              <p>上記質問への回答内容について、自身の度合いを自己評価したものを回答してください。</p>
-                <div class="slider-labels">
-                    <span>自信が無い</span>
-                    <span>自信が有る</span>
-                 </div>
-              <input type="range" id="confidence_input_${i}" min="1" max="7" value="4" step="1" style="width:100%;">
-              <div style="text-align:center; margin-top: 1em;">現在のスライダーの値:<span id="confidence_value_${i}">4</span></div>
-            </div>
-          `,
-          choices: ['次に進む'],
-          on_load: function() {
-            let base_radius = 100;
-            let offset = a;
-        
-            // --- 図形描画 ---
-            function drawIllusion(r_diff) {
-              let canvas = document.getElementById('illusion_canvas_' + i);
-              if (!canvas) return;
-              let ctx = canvas.getContext('2d');
-              ctx.clearRect(0, 0, canvas.width, canvas.height);
-              ctx.beginPath();
-              ctx.arc(250, 200, base_radius - offset - Number(r_diff), 0, 2 * Math.PI);
-              ctx.fillStyle = left_color;
-              ctx.fill();
-              ctx.beginPath();
-              ctx.arc(550, 200, base_radius + offset + Number(r_diff), 0, 2 * Math.PI);
-              ctx.fillStyle = right_color;
-              ctx.fill();
-            }
-            drawIllusion(0);
-        
-            const rInput = document.getElementById('r_diff_input_' + i);
-            const rSpan = document.getElementById('r_diff_value_' + i);
-            const cInput = document.getElementById('confidence_input_' + i);
-            const cSpan = document.getElementById('confidence_value_' + i);
-        
-            rInput.addEventListener('input', () => {
-              drawIllusion(rInput.value);
-              rSpan.textContent = rInput.value;
-            });
-            cInput.addEventListener('input', () => {
-              cSpan.textContent = cInput.value;
-            });
-        
-            // 🔸 ボタン押下時に値を取得して data に格納
-            const displayEl = jsPsych.getDisplayElement();
-            const buttons = displayEl.querySelectorAll('.jspsych-btn');
-            buttons.forEach(btn => {
-              btn.addEventListener('click', () => {
-                const rVal = Number(rInput.value);
-                const cVal = Number(cInput.value);
-                jsPsych.data.addProperties({
-                  illusion_value: rVal,
-                  confidence_value: cVal,
-                  left_color: left_color,
-                  right_color: right_color,
-                  model_answer: -a
-                });
-              }, { once: true });
-            });
-          },
-          on_finish: function(data) {
-            // on_finish では HTML は消えているため、ここでは新規取得しない
-            // すでに addProperties で保存済みの値をそのまま保持
-          }
-        };
-
-        timeline.push(
-          {
-          timeline: [illusion_or_not],
-          conditional_function: function() {
-            // ブロックが始まる直前に判定。前の反復で continueNested が false なら以降のブロックは実行されない
-            return continueNested;
-          }
-       });
-
-        var model_answer = {
-          type: jsPsychHtmlButtonResponse,
-          stimulus: function() {
-            // 「直前の illusion_or_not トライアル」を明示的に取得
-            const last_illusion_trial = jsPsych.data.get().filter({ name: 'illusion_or_not' }).last(1).values()[0];
-        
-            const illusion_value = last_illusion_trial.illusion_value;
-            const correct = last_illusion_trial.model_answer ?? 'N/A';
-        
-            return `正答は「${-a}」であり、あなたの回答は ${illusion_value} です。`;
-          },
-          name: "model_answer_" + i,
-          choices: ['次に進む', 'ループ後の質問へジャンプ'],
-          conditional_function: () => continueNested,
-          on_finish: function(data) {
-            if (data.response === 1) {
-              continueNested = false;
-              data.jump_requested = true;
-            } else {
-              data.jump_requested = false;
-            }
-          }
-        };
-
-
-        timeline.push({
-          timeline: [model_answer],
-          conditional_function: function() {
-            // ブロックが始まる直前に判定。前の反復で continueNested が false なら以降のブロックは実行されない
-            return continueNested;
-          }
-       });
-
-        // 各反復を「ブロック」にして追加する
-        // loop_timeline.push({
-        //   timeline: [illusion_or_not, model_answer],
-        //   conditional_function: function() {
-        //     // ブロックが始まる直前に判定。前の反復で continueNested が false なら以降のブロックは実行されない
-        //     return continueNested;
-        //   }
-        // });
+  const illusion_or_not = {
+    type: jsPsychHtmlButtonResponse,
+    name: 'illusion_or_not_' + i,
+    stimulus: `<div style="max-width:720px; margin:0 auto;">
+      <p>画像に示された2つの図形の大きさをスライダーで調整し、次に進むを押してください。</p>
+      <div style="display:flex; justify-content:center;">
+        <canvas id="illusion_canvas_${i}" width="800" height="400" style="background:white; border:1px solid #ccc;"></canvas>
+      </div>
+      <input type="range" id="r_diff_input_${i}" min="-50" max="50" value="0" step="1" style="width:100%;">
+      <div>スライダー値: <span id="r_diff_value_${i}">0</span></div>
+      <p>回答への自信をスライダーで評価してください。</p>
+      <div class="slider-labels"><span>自信が無い</span><span>自信が有る</span></div>
+      <input type="range" id="confidence_input_${i}" min="1" max="7" value="4" step="1" style="width:100%;">
+      <div>自信値: <span id="confidence_value_${i}">4</span></div>
+    </div>`,
+    choices:['次に進む'],
+    on_load: function(){
+      const canvas=document.getElementById('illusion_canvas_' + i);
+      const ctx=canvas.getContext('2d');
+      const base_radius=100;
+      const offset=a;
+      function drawIllusion(r_diff){
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ctx.beginPath();
+        ctx.arc(250,200,base_radius - offset - r_diff,0,2*Math.PI);
+        ctx.fillStyle=left_color_i; ctx.fill();
+        ctx.beginPath();
+        ctx.arc(550,200,base_radius + offset + r_diff,0,2*Math.PI);
+        ctx.fillStyle=right_color_i; ctx.fill();
+      }
+      drawIllusion(0);
+      const rInput=document.getElementById('r_diff_input_' + i);
+      const cInput=document.getElementById('confidence_input_' + i);
+      rInput.oninput=function(){ illusion_value_map[i]=Number(this.value); document.getElementById('r_diff_value_'+i).textContent=this.value; drawIllusion(Number(this.value)); };
+      cInput.oninput=function(){ confidence_value_map[i]=Number(this.value); document.getElementById('confidence_value_'+i).textContent=this.value; };
+      illusion_value_map[i]=Number(rInput.value);
+      confidence_value_map[i]=Number(cInput.value);
+    },
+    on_finish: function(data){
+      data.illusion_value = illusion_value_map[i] ?? null;
+      data.confidence_value = confidence_value_map[i] ?? null;
+      data.left_color = left_color_i;
+      data.right_color = right_color_i;
+      data.model_answer = -a;
+      last_illusion_data = data; // ここで必ず更新
     }
+  };
 
-    // ループをまとめたネストされた timeline を main timeline に追加する
-    // timeline.push({
-    //   timeline: loop_timeline
-    // });
+  const model_answer = {
+    type: jsPsychHtmlButtonResponse,
+    name: 'model_answer_' + i,
+    choices: ['次に進む','ループ後の質問へジャンプ'],
+    stimulus: function(){
+      if(!last_illusion_data) return "直前の回答が取得できませんでした。";
+      return `正答は「${last_illusion_data.model_answer}」、あなたの回答は ${last_illusion_data.illusion_value} です。`;
+    },
+    on_finish: function(data){
+      if(data.response===1) continueNested=false;
+    }
+  };
 
-    var equip = {
-        type: jsPsychSurveyMultiChoice,
-        questions: [
-            {prompt: "使用機器を回答してください",
-             options: jsPsych.randomization.repeat(['デスクトップPC', 'ノートPC', 'スマートフォン', 'その他'], 1),
-             required: true,
-             horizontal: true,
-             name: 'gender' 
-            },
-        ],
-        button_label: '次へ',
-    };
-    timeline.push(equip);
+  timeline.push({
+    timeline:[illusion_or_not,model_answer],
+    conditional_function:function(){ return continueNested; }
+  });
+}
 
-    var finish = {
-        type: jsPsychHtmlButtonResponse,
-        stimulus: '<p>これでアンケートは終わりです。<br>' +
-            '以下のボタンから回答を送信してください。<br>' +
-            '回答データの送信後、活動報告に記入していただくパスワードが表示されます。</p>',
-        choices: ['回答データを送信'],
-        on_finish: function() {
-            url = "https://script.google.com/macros/s/AKfycbyui_sjh61KU2998sL6YyN0Q6wG7RdkOTlMwoWnicte0a1lMuKVcwsnK5oTcE5HnmcNzw/exec";
-            
-            fetch(url, {
-              method: "POST",
-              headers: {
-                "Content-Type": "text/plain"
-              },
-              body: JSON.stringify({
-                subID: null,
-                getSubID: 0,
-                data: jsPsych.data.get().csv()
-              })
-            })
-            .then(response => response.text())
-            .then(text => {
-              try {
-                const result = JSON.parse(text);
-                console.log("成功:", result);
-              } catch (e) {
-                console.error("JSONパース失敗:", text);
-              }
-            })
-            .catch(error => console.error("fetch失敗:", error));
-        }
-    };
-    timeline.push(finish);
+// 使用機器
+timeline.push({
+  type: jsPsychSurveyMultiChoice,
+  questions:[{prompt:"使用機器を回答してください",
+             options:['デスクトップPC','ノートPC','スマートフォン','その他'],
+             required:true,
+             horizontal:true,
+             name:'device'}],
+  button_label:'次へ'
+});
 
-    var thanks = {
-      type: jsPsychHtmlKeyboardResponse,
-      stimulus: '<p>これでアンケートは終わりです。<br>' +
-            '以下のパスワードを、記録したうえで、活動報告の欄に入力してください。<br>' +
-            'Pass: xxxxxxxx<br>' +
-            'パスワードの記録が済み次第、タブを閉じ実験への参加を終了してください。<br>' +
-            '実験に参加いただき、ありがとうございました。</p>',
-      choices: 'NO_KEYS'
-    };
-    timeline.push(thanks);
+// 終了
+timeline.push({
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus:'<p>これでアンケートは終了です。パスワード: xxxxxxxx</p>',
+  choices:'NO_KEYS'
+});
 
-    jsPsych.run(timeline);
-
+jsPsych.run(timeline);
 </script>
-
 </html>
