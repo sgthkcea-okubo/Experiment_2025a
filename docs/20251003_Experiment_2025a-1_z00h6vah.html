@@ -27,18 +27,8 @@
           line-height: 1;         /* 垂直中央揃え */
           cursor: pointer;
           -webkit-tap-highlight-color: rgba(0,0,0,0.12); /* タッチの見た目 */
-        };
-        .range-marks {
-          display: flex;
-          justify-content: space-between;
         }
-        .range-input {
-          width: 100%;
-        }
-        .range-container {
-          width: 300px;
-        }
-        .slider-labels {
+       .slider-labels {
           /* ラベルのコンテナ */
           display: flex; /* Flexboxを有効化 */
           justify-content: space-between; /* 子要素を両端に配置 */
@@ -115,7 +105,7 @@
     const num_of_loops = 100;
 
     // --- 重要: ループ中のトライアルを一旦この配列にためる ---
-    var loop_timeline = [];
+    // var loop_timeline = [];
 
     // 継続フラグ（endCurrentTimeline が無い場合の代替）
     var continueNested = true;
@@ -155,7 +145,7 @@
               <div style="text-align:center; margin-top: 1em;">現在のスライダーの値: <span id="r_diff_value_${i}">0</span></div>
         
               <p>上記質問への回答内容について、自身の度合いを自己評価したものを回答してください。</p>
-              <div class="range-marks
+              <div class="range-marks>
               </div>
                 <div class="slider-labels">
                     <span>自信が無い</span>
@@ -223,12 +213,20 @@
           }
         };
 
-        
+        timeline.push(
+          {
+          timeline: [illusion_or_not],
+          conditional_function: function() {
+            // ブロックが始まる直前に判定。前の反復で continueNested が false なら以降のブロックは実行されない
+            return continueNested;
+          }
+       });
+
         var model_answer = {
           type: jsPsychHtmlButtonResponse,
           stimulus: function() {
             const last_trial = jsPsych.data.get().last().values()[0];
-            const illusion_value = last_trial.illusion_value ?? 'N/A';
+            const illusion_value = last_trial.illusion_value;
             const correct = last_trial.model_answer ?? 'N/A';
             return `正答は「${-a}」であり、あなたの回答は ${illusion_value} です。`;
           },
@@ -245,22 +243,28 @@
           }
         };
 
-
-
-        // 各反復を「ブロック」にして追加する
-        loop_timeline.push({
-          timeline: [illusion_or_not, model_answer],
+        timeline.push({
+          timeline: [model_answer],
           conditional_function: function() {
             // ブロックが始まる直前に判定。前の反復で continueNested が false なら以降のブロックは実行されない
             return continueNested;
           }
-        });
+       });
+
+        // 各反復を「ブロック」にして追加する
+        // loop_timeline.push({
+        //   timeline: [illusion_or_not, model_answer],
+        //   conditional_function: function() {
+        //     // ブロックが始まる直前に判定。前の反復で continueNested が false なら以降のブロックは実行されない
+        //     return continueNested;
+        //   }
+        // });
     }
 
     // ループをまとめたネストされた timeline を main timeline に追加する
-    timeline.push({
-      timeline: loop_timeline
-    });
+    // timeline.push({
+    //   timeline: loop_timeline
+    // });
 
     var equip = {
         type: jsPsychSurveyMultiChoice,
