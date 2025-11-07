@@ -203,10 +203,10 @@ on_load: function(){
   ctx.arc(550,200,base_radius + offset + d.model_answer,0,2*Math.PI);
   ctx.fillStyle = d.right_color; ctx.fill(); ctx.closePath();
 
-  // --- ② 正答位置を破線黒で描画 ---
+  // --- ② 正答位置を灰破線で描画 ---
   ctx.setLineDash([6,4]);
   ctx.lineWidth = 2;
-  ctx.strokeStyle = 'black';
+  ctx.strokeStyle = 'gray';
   ctx.beginPath();
   ctx.arc(250,200,base_radius - offset - d.model_answer,0,2*Math.PI);
   ctx.stroke();
@@ -217,10 +217,10 @@ on_load: function(){
   ctx.stroke();
   ctx.closePath();
 
-  // --- ③ あなたの回答位置を灰実線で描画 ---
+  // --- ③ あなたの回答位置を黒実線で描画 ---
   ctx.setLineDash([]);
   ctx.lineWidth = 3;
-  ctx.strokeStyle = 'gray';
+  ctx.strokeStyle = 'black';
   ctx.beginPath();
   ctx.arc(250,200,base_radius - offset - d.illusion_value,0,2*Math.PI);
   ctx.stroke();
@@ -233,9 +233,9 @@ on_load: function(){
 
   // --- ラベル（任意） ---
   ctx.font = '16px sans-serif';
-  ctx.fillStyle = 'black';
-  ctx.fillText('正答位置（破線）', 600, 40);
   ctx.fillStyle = 'gray';
+  ctx.fillText('正答位置（破線）', 600, 40);
+  ctx.fillStyle = 'black';
   ctx.fillText('あなたの回答（実線）', 600, 65);
 },
   on_finish: function(){
@@ -320,3 +320,4 @@ timeline.push(thanks);
 jsPsych.run(timeline);
 </script>
 </html>
+
