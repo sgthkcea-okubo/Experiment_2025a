@@ -103,10 +103,10 @@ const illusion_or_not = {
         <canvas id="illusion_canvas_${i}" width="800" height="400" style="background:white; border:1px solid #ccc;"></canvas>
       </div>
       <input type="range" id="r_diff_input_${i}" min="-50" max="50" value="0" step="1" style="width:100%;">
-      <div>（スライダー1）図形の大きさ調整値: <span id="r_diff_value_${i}">0</span></div>
+      <div>（スライダー1）図形の大きさの調整に関する値: <span id="r_diff_value_${i}">0</span></div>
       <div class="slider-labels"><span>自信が無い</span><span>自信が有る</span></div>
       <input type="range" id="confidence_input_${i}" min="1" max="7" value="4" step="1" style="width:100%;">
-      <div>（スライダー2）自己評価値: <span id="confidence_value_${i}">4</span></div>
+      <div>（スライダー2）回答内容の自己評価に関する値: <span id="confidence_value_${i}">4</span></div>
     </div>`,
   choices: ['回答を確定'],
   on_load: function(){
@@ -320,5 +320,6 @@ timeline.push(thanks);
 jsPsych.run(timeline);
 </script>
 </html>
+
 
 
