@@ -189,49 +189,52 @@ on_load: function(){
   const canvas = document.getElementById(`feedback_canvas_${i}`);
   const ctx = canvas.getContext('2d');
   const base_radius = 100;
-  const offset = -d.model_answer;
+  const offset = -d.model_answer; // 正答位置の補正用
 
-  // --- ① 図形を背景として再描画（正答位置を基準に） ---
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // 左右の正答円を塗りつぶし（正答値の色）
+  // --- (1) あなたが調整した図形を塗りつぶし ---
   ctx.beginPath();
-  ctx.arc(250,200,base_radius - offset - d.model_answer,0,2*Math.PI);
-  ctx.fillStyle = d.left_color; ctx.fill(); ctx.closePath();
+  ctx.arc(250, 200, base_radius - offset - d.illusion_value, 0, 2*Math.PI);
+  ctx.fillStyle = d.left_color;
+  ctx.fill();
+  ctx.closePath();
 
   ctx.beginPath();
-  ctx.arc(550,200,base_radius + offset + d.model_answer,0,2*Math.PI);
-  ctx.fillStyle = d.right_color; ctx.fill(); ctx.closePath();
+  ctx.arc(550, 200, base_radius + offset + d.illusion_value, 0, 2*Math.PI);
+  ctx.fillStyle = d.right_color;
+  ctx.fill();
+  ctx.closePath();
 
-  // --- ② 正答位置を灰破線で描画 ---
+  // --- (2) 正答位置を灰破線で表示 ---
   ctx.setLineDash([6,4]);
   ctx.lineWidth = 2;
   ctx.strokeStyle = 'gray';
   ctx.beginPath();
-  ctx.arc(250,200,base_radius - offset - d.model_answer,0,2*Math.PI);
+  ctx.arc(250, 200, base_radius - offset - d.model_answer, 0, 2*Math.PI);
   ctx.stroke();
   ctx.closePath();
 
   ctx.beginPath();
-  ctx.arc(550,200,base_radius + offset + d.model_answer,0,2*Math.PI);
+  ctx.arc(550, 200, base_radius + offset + d.model_answer, 0, 2*Math.PI);
   ctx.stroke();
   ctx.closePath();
 
-  // --- ③ あなたの回答位置を黒実線で描画 ---
+  // --- (3) あなたの回答位置を黒実線で表示（直前に調整したスライダー1） ---
   ctx.setLineDash([]);
   ctx.lineWidth = 3;
   ctx.strokeStyle = 'black';
   ctx.beginPath();
-  ctx.arc(250,200,base_radius - offset - d.illusion_value,0,2*Math.PI);
+  ctx.arc(250, 200, base_radius - offset - d.illusion_value, 0, 2*Math.PI);
   ctx.stroke();
   ctx.closePath();
 
   ctx.beginPath();
-  ctx.arc(550,200,base_radius + offset + d.illusion_value,0,2*Math.PI);
+  ctx.arc(550, 200, base_radius + offset + d.illusion_value, 0, 2*Math.PI);
   ctx.stroke();
   ctx.closePath();
 
-  // --- ラベル（任意） ---
+  // --- (4) ラベル（任意） ---
   ctx.font = '16px sans-serif';
   ctx.fillStyle = 'gray';
   ctx.fillText('正しい回答（破線）', 600, 40);
@@ -320,6 +323,7 @@ timeline.push(thanks);
 jsPsych.run(timeline);
 </script>
 </html>
+
 
 
 
