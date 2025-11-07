@@ -151,7 +151,7 @@ const illusion_or_not = {
     data.model_answer = -a;
 
     // --- 正答判定と連続正答カウント ---
-    if (Math.abs(data.illusion_value - data.model_answer) <= 2) {
+    if (Math.abs(data.illusion_value - data.model_answer) <= 0) {
       correct_streak++;
     } else {
       correct_streak = 0;
@@ -320,4 +320,5 @@ timeline.push(thanks);
 jsPsych.run(timeline);
 </script>
 </html>
+
 
