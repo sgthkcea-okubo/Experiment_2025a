@@ -234,7 +234,7 @@ on_load: function(){
   // --- ラベル（任意） ---
   ctx.font = '16px sans-serif';
   ctx.fillStyle = 'gray';
-  ctx.fillText('正答位置（破線）', 600, 40);
+  ctx.fillText('正しい回答（破線）', 600, 40);
   ctx.fillStyle = 'black';
   ctx.fillText('あなたの回答（実線）', 600, 65);
 },
@@ -320,6 +320,7 @@ timeline.push(thanks);
 jsPsych.run(timeline);
 </script>
 </html>
+
 
 
 
