@@ -33,10 +33,17 @@ let continueNested = true;
 
 let timeline = [];
 
-// ウェルカム
-timeline.push({
-  type: jsPsychHtmlButtonResponse,
-  stimulus: 
+// インフォームドコンセント
+const informed_consent = {
+    type: jsPsychSurveyMultiSelect,
+    questions: [{
+        prompt: "上記説明を読み理解した上で本実験へ参加いただける場合は、次のチェックボックスについて内容を理解した上でチェックを入れ、「次へ」のボタンを押してください。", 
+        options: ["私は、本研究の内容と目的について十分に説明され、本研究に参加することに同意します。私は、ペナルティを負うことなく、いつでも自由に参加を取りやめることができることを理解しています。"], 
+        horizontal: true,
+        required: true,
+        name: 'agreement'
+    }]
+    preamble: 
     `<div style="width:100%; max-width:720px;">
       <style>
           pre {
@@ -59,22 +66,18 @@ timeline.push({
 <strong>匿名データセットの保存</strong>
 
 論文公開後は、この研究で収集された情報は、完全に匿名化された上で、オープンサイエンス・フレームワークなどのオンラインデータリポジトリを通じて一般に公開されます。これにより、質の高い科学研究に貢献することができます。例えば、他の研究者は、実施した分析を繰り返したり、別の仮説を検証したりすることができます。
-
------------------------------
-
-<strong>インフォームドコンセント</strong>
-
-私は、本研究の内容と目的について十分に説明され、本研究に参加することに同意します。私は、ペナルティを負うことなく、いつでも自由に参加を取りやめることができることを理解しています。
       </pre>
     </div>`,
-  choices: ['アンケートに進む']
-});
+    button_label: ['次へ']
+};
+timeline.push(informed_consent)
 
 // 名前入力
-timeline.push({
+const name = {
   type: jsPsychSurveyText,
   questions: [{prompt:'回答者の名前を入力してください。'}]
-});
+};
+timeline.push(name)
 
 // 色セット
 const colorset1_1 = ["blue","indigo","violet"];
@@ -323,6 +326,7 @@ timeline.push(thanks);
 jsPsych.run(timeline);
 </script>
 </html>
+
 
 
 
