@@ -212,7 +212,7 @@ on_load: function(){
 
   // --- (2) 正答位置を灰破線で表示 ---
   ctx.setLineDash([6,4]);
-  ctx.lineWidth = 2;
+  ctx.lineWidth = 1;
   ctx.strokeStyle = 'gray';
   ctx.beginPath();
   ctx.arc(250, 200, base_radius - offset - d.model_answer, 0, 2*Math.PI);
@@ -226,7 +226,7 @@ on_load: function(){
 
   // --- (3) あなたの回答位置を黒実線で表示（直前に調整したスライダー1） ---
   ctx.setLineDash([]);
-  ctx.lineWidth = 3;
+  ctx.lineWidth = 1;
   ctx.strokeStyle = 'black';
   ctx.beginPath();
   ctx.arc(250, 200, base_radius - offset - d.illusion_value, 0, 2*Math.PI);
@@ -327,6 +327,7 @@ timeline.push(thanks);
 jsPsych.run(timeline);
 </script>
 </html>
+
 
 
 
