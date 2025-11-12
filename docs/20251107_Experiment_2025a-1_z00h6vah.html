@@ -38,15 +38,23 @@ let timeline = [];
 const informed_consent = {
     type: jsPsychSurveyMultiSelect,
     questions: [{
-        preamble: 
-            `<div style="width:100%; max-width:720px;">
-                <style>
-                    pre {
-                      white-space: pre-wrap;
-                      word-wrap: break-word; /* 必要に応じて追加 */
-                    }
-                </style>
-                <pre style="text-align:left;">
+        
+        prompt: "上記説明を読み理解した上で本実験へ参加いただける場合は、次のチェックボックスについて内容を理解した上でチェックを入れ、「次へ」のボタンを押してください。", 
+        options: ["私は、本研究の内容と目的について十分に説明され、本研究に参加することに同意します。私は、ペナルティを負うことなく、いつでも自由に参加を取りやめることができることを理解しています。"], 
+        horizontal: true,
+        required: true,
+        name: 'agreement',
+        button_label: ['次へ']
+    }]
+    preamble: 
+        `<div style="width:100%; max-width:720px;">
+            <style>
+                pre {
+                  white-space: pre-wrap;
+                  word-wrap: break-word; /* 必要に応じて追加 */
+                }
+            </style>
+            <pre style="text-align:left;">
 （下にスクロールして読み進め、アンケートに進む場合はページ下部のボタンを押してください。）
 <strong>参加者の皆様へ。</strong>
     
@@ -61,15 +69,8 @@ const informed_consent = {
 <strong>匿名データセットの保存</strong>
     
 論文公開後は、この研究で収集された情報は、完全に匿名化された上で、オープンサイエンス・フレームワークなどのオンラインデータリポジトリを通じて一般に公開されます。これにより、質の高い科学研究に貢献することができます。例えば、他の研究者は、実施した分析を繰り返したり、別の仮説を検証したりすることができます。
-                </pre>
-            </div>`,
-        prompt: "上記説明を読み理解した上で本実験へ参加いただける場合は、次のチェックボックスについて内容を理解した上でチェックを入れ、「次へ」のボタンを押してください。", 
-        options: ["私は、本研究の内容と目的について十分に説明され、本研究に参加することに同意します。私は、ペナルティを負うことなく、いつでも自由に参加を取りやめることができることを理解しています。"], 
-        horizontal: true,
-        required: true,
-        name: 'agreement',
-        button_label: ['次へ']
-    }]
+            </pre>
+        </div>`,
 };
 timeline.push(informed_consent)
 
@@ -327,6 +328,7 @@ timeline.push(thanks);
 jsPsych.run(timeline);
 </script>
 </html>
+
 
 
 
