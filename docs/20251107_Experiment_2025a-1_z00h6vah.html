@@ -26,19 +26,6 @@
         display: flex;
         justify-content: center;     /* 横方向中央揃え */
     }
-
-  /* --- jsPsych表示領域全体 --- */
-    body, #jspsych-target, #jspsych-content {
-        width: 100%;
-        max-width: 720px;             /* 内容幅を制限 */
-        box-sizing: border-box;
-        padding: 20px;                /* 左右上下の余白 */
-        text-align: left;             /* テキスト左揃え */
-        white-space: pre-wrap;        /* 改行保持＋折り返し許可 */
-        word-wrap: break-word;
-        margin: 0 auto;               /* 中央に配置 */
-        font-family: monospace;       /* preのような等幅フォント */
-    }
     
     /* --- <pre>タグの挙動も統一 --- */
     pre {
@@ -353,6 +340,7 @@ timeline.push(thanks);
 jsPsych.run(timeline);
 </script>
 </html>
+
 
 
 
