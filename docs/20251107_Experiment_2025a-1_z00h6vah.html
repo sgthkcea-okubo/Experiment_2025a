@@ -18,8 +18,16 @@
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <style>
-button.jspsych-btn { min-width: 120px; height:48px; font-size:18px; border-radius:8px; }
-.slider-labels { display:flex; justify-content:space-between; font-size:14px; margin-bottom:5px; }
+    body {
+        width: 100%;
+        max-width: 720px;
+        margin: 0 auto; /* 中央寄せにしたい場合 */
+        white-space: pre-wrap;
+        word-wrap: break-word; /* 必要に応じて追加 */
+        text-align: left;           /* 左揃え */
+    }
+/* button.jspsych-btn { min-width: 120px; height:48px; font-size:18px; border-radius:8px; }
+.slider-labels { display:flex; justify-content:space-between; font-size:14px; margin-bottom:5px; } */
 </style>
 </head>
 <body></body>
@@ -47,14 +55,8 @@ const informed_consent = {
         button_label: ['次へ']
     }],
     preamble: 
-        `<div style="width:100%; max-width:720px;">
-            <style>
-                pre {
-                  white-space: pre-wrap;
-                  word-wrap: break-word; /* 必要に応じて追加 */
-                }
-            </style>
-            <pre style="text-align:left;">
+        `<div>
+            <pre>
 （下にスクロールして読み進め、アンケートに進む場合はページ下部のボタンを押してください。）
 <strong>参加者の皆様へ。</strong>
     
@@ -328,6 +330,7 @@ timeline.push(thanks);
 jsPsych.run(timeline);
 </script>
 </html>
+
 
 
 
