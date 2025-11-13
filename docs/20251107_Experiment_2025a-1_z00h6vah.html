@@ -19,40 +19,42 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <style>
   /* --- ページ全体のレイアウト --- */
-  html, body {
-    margin: 0;
-    padding: 0;
-    background-color: white;
-    display: flex;
-    justify-content: center;     /* 横方向中央揃え */
-  }
+    html, body {
+        margin: 0;
+        padding: 0;
+        background-color: white;
+        display: flex;
+        justify-content: center;     /* 横方向中央揃え */
+    }
 
   /* --- jsPsych表示領域全体 --- */
-  body, #jspsych-target, #jspsych-content {
-    width: 100%;
-    max-width: 720px;             /* 内容幅を制限 */
-    box-sizing: border-box;
-    padding: 20px;                /* 左右上下の余白 */
-    text-align: left;             /* テキスト左揃え */
-    white-space: pre-wrap;        /* 改行保持＋折り返し許可 */
-    word-wrap: break-word;
-    margin: 0 auto;               /* 中央に配置 */
-    font-family: monospace;       /* preのような等幅フォント */
-  }
-
-  /* --- <pre>タグの挙動も統一 --- */
-  pre {
-    white-space: pre-wrap;
-    text-align: left;
-    margin: 0;
-    font-family: monospace;
-  }
-
-  /* --- ボタンなど他要素の中央揃え保持（念のため） --- */
-  .jspsych-btn, button {
-    display: inline-block;
-    margin: 10px auto;
-  }
+    body, #jspsych-target, #jspsych-content {
+        width: 100%;
+        max-width: 720px;             /* 内容幅を制限 */
+        box-sizing: border-box;
+        padding: 20px;                /* 左右上下の余白 */
+        text-align: left;             /* テキスト左揃え */
+        white-space: pre-wrap;        /* 改行保持＋折り返し許可 */
+        word-wrap: break-word;
+        margin: 0 auto;               /* 中央に配置 */
+        font-family: monospace;       /* preのような等幅フォント */
+    }
+    
+    /* --- <pre>タグの挙動も統一 --- */
+    pre {
+        white-space: pre-wrap;
+        text-align: left;
+        margin: 0;
+        font-family: monospace;
+    }
+    
+    /* --- ボタンなど他要素の中央揃え保持（念のため） --- */
+    .jspsych-btn, button {
+        display: inline-block;
+        margin: 10px auto;
+    }
+    
+    .slider-labels { display:flex; justify-content:space-between; font-size:14px; margin-bottom:5px; }
 </style>
 </head>
 <body></body>
@@ -355,6 +357,7 @@ timeline.push(thanks);
 jsPsych.run(timeline);
 </script>
 </html>
+
 
 
 
