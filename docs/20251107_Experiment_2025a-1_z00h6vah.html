@@ -18,15 +18,18 @@
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <style>
-    body {
-        width: 100%;
-        max-width: 720px;
-        white-space: pre-wrap;
-        word-wrap: break-word; /* 必要に応じて追加 */
-        text-align: left;           /* 左揃え */
-    }
-/* button.jspsych-btn { min-width: 120px; height:48px; font-size:18px; border-radius:8px; }
-.slider-labels { display:flex; justify-content:space-between; font-size:14px; margin-bottom:5px; } */
+  body, #jspsych-content, #jspsych-target {
+    max-width: 720px;
+    margin: 0 auto;
+    text-align: left;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: monospace; /* preと同じ見た目にしたい場合 */
+  }
+
+  pre {
+    white-space: pre-wrap;
+  }
 </style>
 </head>
 <body></body>
@@ -329,6 +332,7 @@ timeline.push(thanks);
 jsPsych.run(timeline);
 </script>
 </html>
+
 
 
 
