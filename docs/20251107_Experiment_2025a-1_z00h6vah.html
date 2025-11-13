@@ -48,12 +48,6 @@
         font-family: monospace;
     }
     
-    /* --- ボタンなど他要素の中央揃え保持（念のため） --- */
-    .jspsych-btn, button {
-        display: inline-block;
-        margin: 10px auto;
-    }
-    
     .slider-labels { display:flex; justify-content:space-between; font-size:14px; margin-bottom:5px; }
 </style>
 </head>
@@ -79,7 +73,7 @@ const informed_consent = {
         horizontal: true,
         required: true,
         name: 'agreement',
-        button_label: '次へ'
+        button_label: ['次へ']
     }],
     preamble: 
         `<div>
@@ -108,7 +102,7 @@ timeline.push(informed_consent)
 const name = {
     type: jsPsychSurveyText,
     questions: [{prompt:'回答者の名前を入力してください。'}],
-    button_label: '次へ'
+    button_label: ['次へ']
 };
 timeline.push(name)
 
@@ -359,6 +353,7 @@ timeline.push(thanks);
 jsPsych.run(timeline);
 </script>
 </html>
+
 
 
 
