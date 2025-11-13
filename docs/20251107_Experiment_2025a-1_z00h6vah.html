@@ -85,6 +85,7 @@ const informed_consent = {
         `<div>
             <pre>
 （下にスクロールして読み進め、アンケートに進む場合はページ下部のボタンを押してください。）
+
 <strong>参加者の皆様へ。</strong>
     
 この研究にご参加いただき、ありがとうございます。この研究は、みなさんの知覚経験と信念の関連を調べるものです。 この調査の結果は、哲学的理論の構築や批判に寄与することになります。
@@ -105,8 +106,9 @@ timeline.push(informed_consent)
 
 // 名前入力
 const name = {
-  type: jsPsychSurveyText,
-  questions: [{prompt:'回答者の名前を入力してください。'}]
+    type: jsPsychSurveyText,
+    questions: [{prompt:'回答者の名前を入力してください。'}],
+    button_label: ['次へ']
 };
 timeline.push(name)
 
@@ -357,6 +359,7 @@ timeline.push(thanks);
 jsPsych.run(timeline);
 </script>
 </html>
+
 
 
 
