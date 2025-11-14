@@ -179,9 +179,9 @@ const illusion_or_not = {
       </div>
       <input type="range" id="r_diff_input_${i}" min="-50" max="50" value="0" step="1" style="width:100%;">
       <div>（スライダー1）図形の大きさの調整に関する値: <span id="r_diff_value_${i}">0</span></div>
-      <div class="slider-labels" style="display:none"><span>自信が無い</span><span>自信が有る</span></div>
-      <input type="range" id="confidence_input_${i}" min="1" max="7" value="4" step="1" style="width:100%; display:none">
-      <div style="display:none">（スライダー2）回答内容の自己評価に関する値: <span id="confidence_value_${i}">4</span></div>
+      <div class="slider-labels" style="display:hidden"><span>自信が無い</span><span>自信が有る</span></div>
+      <input type="range" id="confidence_input_${i}" min="1" max="7" value="4" step="1" style="width:100%; display:hidden">
+      <div style="display:hidden">（スライダー2）回答内容の自己評価に関する値: <span id="confidence_value_${i}">4</span></div>
     </div>`,
   choices: ['回答を確定'],
   on_load: function(){
@@ -416,3 +416,4 @@ jsPsych.run(timeline);
 </script>
 
 </html>
+
