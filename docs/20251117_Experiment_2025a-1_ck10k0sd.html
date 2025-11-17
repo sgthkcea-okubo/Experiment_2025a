@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Experiment_2025a</title>
+    <script src="https://unpkg.com/jspsych@8.2.2"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-text@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-multi-choice@2.1.0"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-multi-select@1.1.3"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-html-slider-response@2.1.0"></script>
+    <link href="https://unpkg.com/jspsych@8.2.2/css/jspsych.css" rel="stylesheet" type="text/css" />
+    <meta charset="UTF-8">
+    <script src="https://sgthkcea-okubo.github.io/jspsych-psychophysics/jspsych-psychophysics.js"></script>
+    <script src="https://sgthkcea-okubo.github.io/jsPsychSheet/jspsychsheet.js"></script>
+    <link rel="stylesheet" href="https://sgthkcea-okubo.github.io/jsPsychSheet/jspsychsheet.css">
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<style>
+  div, #jspsych-target, #jspsych-content {
+    font-size: 20px;
+  }
+  pre {
+    font-size: 20px;
+    max-width: 680px;
+    white-space: pre-wrap;
+    word-break: break-all;
+    text-align: left;
+    margin: auto;
+    font-family: monospace;
+    white-space: pre-line;
+  }
+  p {
+    text-indent: 1em;
+  }
+  .slider-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0px;
+  }
+  .jspsych-btn {
+    font-size: 20px;
+    width: 20em;
+    height: 5em;
+  }
+    /* SurveyMultiSelect のチェックボックスを大きくする */
+  .jspsych-survey-multi-select-question input[type="checkbox"] {
+    width: 24px;    /* 横サイズ */
+    height: 24px;   /* 縦サイズ */
+    transform: scale(1.4); /* 拡大倍率（任意） */
+    margin-right: 8px;
+  }
+  /* ▼ jsPsych の slider を確実に上書きする（超重要） */
+  .jspsych-content input[type="range"] {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    width: 100%;
+    height: 8px !important;        /* トラックの太さ */
+    background: #888 !important;   /* トラックの色 */
+    border-radius: 4px;
+    outline: none;
+    margin: 20px 0;                /* つまみが上下にズレるのを防止 */
+  }
+  /* WebKit (Chrome / Edge / Safari) のつまみ位置調整 */
+  .jspsych-content input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    width: 28px !important;
+    height: 28px !important;
+    background: #000 !important;
+    border-radius: 50%;
+    cursor: pointer;
+
+    /* ▼ ここを調整（中央がずれている原因はほぼここ） */
+    margin-top: 0px;   /* ← まずこの値に変更。ずれるなら -4, -2, 0, +2 と調整 */
+  }
+  /* --- Firefox --- */
+  .jspsych-content input[type="range"]::-moz-range-thumb {
+    width: 28px !important;
+    height: 28px !important;
+    background: #000 !important;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  /* Firefox の track */
+  .jspsych-content input[type="range"]::-moz-range-track {
+    height: 8px !important;
+    background: #888 !important;
+    border-radius: 4px;
+  }
+  .jspsych-survey-multi-select-option {
+    line-height: 1.6 !important;   /* ←ここを prompt の行間に合わせる */
+    margin-bottom: 8px !important; /* 任意。行間調整したい時に追加 */
+  }
+</style>
+</head>
+<body></body>
+<script>
+const jsPsych = initJsPsych({});
+
+let last_illusion_data = null;
+let illusion_value_map = {};
+let confidence_value_map = {};
+let correct_streak = 0; // 連続正答カウント
+let continueNested = true;
+
+let timeline = [];
+
+// インフォームドコンセント
+const informed_consent = {
+    type: jsPsychSurveyMultiSelect,
+    questions: [{
+        prompt: `<div><pre>
+          <strong>インフォームドコンセント</strong>
+          <p>上記説明を読み理解した上で本実験へ参加いただける場合は、次のチェックボックスについて内容を理解した上でチェックを入れ、「次へ」のボタンを押してください。</pre></div>`,
+        options: [`<div style="margin:auto"><pre><p>私は、本研究の内容と目的について十分に説明され、本研究に参加することに同意します。私は、ペナルティを負うことなく、いつでも自由に参加を取りやめることができることを理解しています。</pre></div>`], 
+        horizontal: true,
+        required: true,
+        name: 'agreement',
+    }],
+    button_label: '次へ',
+    preamble: 
+        `<div>
+            <pre>
+<p>（下にスクロールして読み進め、アンケートに進む場合はページ下部のボタンを押してください。）
+
+<strong>参加者の皆様へ。</strong>
+    
+<p>この研究にご参加いただき、ありがとうございます。この研究は、みなさんの知覚経験と信念の関連を調べるものです。 この調査の結果は、哲学的理論の構築や批判に寄与することになります。
+    
+<strong>自主的な参加と秘密保持</strong>
+    
+<p>この研究への参加は完全に任意であり、参加を拒否することも、また、いつでも、いかなる理由でも、ペナルティなしに参加を撤回することができます。
+    
+<p>この研究への参加は秘密厳守です。あなたが提供した情報には、この研究に携わる研究者と研究責任者のみがアクセスすることができます。また、データの分析はすべて集計された上で行われます。つまり、すべての参加者のデータの集計値が分析され、あなたの個々の回答が具体的に分析されることは決してありません。さらに、研究結果の公表はすべて匿名とし、個人を特定できるような情報がデータに関連付けられることはありません。
+    
+<strong>匿名データセットの保存</strong>
+    
+<p>論文公開後は、この研究で収集された情報は、完全に匿名化された上で、オープンサイエンス・フレームワークなどのオンラインデータリポジトリを通じて一般に公開されます。これにより、質の高い科学研究に貢献することができます。例えば、他の研究者は、実施した分析を繰り返したり、別の仮説を検証したりすることができます。
+            </pre>
+        </div>`,
+};
+timeline.push(informed_consent)
+
+// 名前入力
+const name = {
+    type: jsPsychSurveyText,
+    questions: [{prompt:`<pre>回答者の名前を入力してください。</pre>`, name:'name'}],
+    button_label: '次へ'
+};
+timeline.push(name)
+
+// 色セット
+const colorset1_1 = ["blue","indigo","violet"];
+const colorset1_2 = ["yellow","yellowgreen","orange"];
+const colorset1 = [colorset1_1, colorset1_2];
+const condition = 1; // 1:異系色条件, 0:同系色条件
+const num_of_loops = 100;
+
+for(let i=0;i<num_of_loops;i++){
+  const colorcond1 = jsPsych.randomization.sampleWithReplacement(colorset1,1)[0];
+  const colorcond2 = jsPsych.randomization.sampleWithReplacement(colorset1.filter(c=>c!==colorcond1),1)[0];
+  const color1 = jsPsych.randomization.sampleWithReplacement(colorcond1,1)[0];
+  const color2 = (condition===1) ? jsPsych.randomization.sampleWithReplacement(colorcond2,1)[0]
+                                : jsPsych.randomization.sampleWithReplacement(colorcond1,1)[0];
+  const left_color_i=color1;
+  const right_color_i=color2;
+  const a = jsPsych.randomization.randomInt(-50,50);
+
+const illusion_or_not = {
+  type: jsPsychHtmlButtonResponse,
+  name: 'illusion_or_not_' + i,
+  stimulus: `<div>
+      <pre>下に示された2つの図形の大きさが等しくなるようスライダー1を調整し、
+      自信の程度をスライダー2で評価してください。</pre>
+      <div style="justify-content:center;">
+        <canvas id="illusion_canvas_${i}" width="720" height="400" style="background:white; border:1px solid #ccc;"></canvas>
+      </div>
+      <input type="range" id="r_diff_input_${i}" min="-50" max="50" value="0" step="1" style="width:100%;">
+      <div>（スライダー1）図形の大きさの調整に関する値: <span id="r_diff_value_${i}">0</span></div>
+      <div class="slider-labels"><span>自信が無い</span><span>自信が有る</span></div>
+      <input type="range" id="confidence_input_${i}" min="1" max="7" value="4" step="1" style="width:100%;">
+      <div>（スライダー2）回答内容の自己評価に関する値: <span id="confidence_value_${i}">4</span></div>
+    </div>`,
+  choices: ['回答を確定'],
+  on_load: function(){
+    const canvas = document.getElementById('illusion_canvas_' + i);
+    const ctx = canvas.getContext('2d');
+    const base_radius = 100;
+    const offset = a;
+    const correct_value = -a;
+
+    function drawIllusion(r_diff){
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.beginPath();
+      ctx.arc(190,200,base_radius - offset - r_diff,0,2*Math.PI);
+      ctx.fillStyle = left_color_i; ctx.fill();
+      ctx.beginPath();
+      ctx.arc(490,200,base_radius + offset + r_diff,0,2*Math.PI);
+      ctx.fillStyle = right_color_i; ctx.fill();
+    }
+    drawIllusion(0);
+
+    // スライダー制御
+    const rInput = document.getElementById('r_diff_input_' + i);
+    const cInput = document.getElementById('confidence_input_' + i);
+    rInput.oninput = function(){
+      illusion_value_map[i] = Number(this.value);
+      document.getElementById('r_diff_value_'+i).textContent = this.value;
+      drawIllusion(Number(this.value));
+    };
+    cInput.oninput = function(){
+      confidence_value_map[i] = Number(this.value);
+      document.getElementById('confidence_value_'+i).textContent = this.value;
+    };
+
+    illusion_value_map[i] = Number(rInput.value);
+    confidence_value_map[i] = Number(cInput.value);
+  },
+  on_finish: function(data){
+    data.illusion_value = illusion_value_map[i];
+    data.confidence_value = confidence_value_map[i];
+    data.left_color = left_color_i;
+    data.right_color = right_color_i;
+    data.model_answer = -a;
+
+    // --- 正答判定と連続正答カウント ---
+    if (Math.abs(data.illusion_value - data.model_answer) <= 0) {
+      correct_streak++;
+    } else {
+      correct_streak = 0;
+    }
+
+    // --- 2回連続正答したらループを抜けるフラグ ---
+    if (correct_streak >= 2) {
+      continueNested = false;
+    }
+
+    // --- このtrialのデータを保持してfeedbackに渡す ---
+    last_illusion_data = data;
+  }
+};
+
+const feedback_trial = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: function(){
+    const d = last_illusion_data;
+    return `<div>
+      <p>下の図は、あなたの回答と正答において調整された図形を示したものです。</p>
+      <div style="justify-content:center;">
+        <canvas id="feedback_canvas_${i}" width="720" height="400" style="background:white; border:1px solid #ccc;"></canvas>
+      </div>
+      <input type="range" id="feedback_slider_${i}" min="-50" max="50" value="${d.model_answer}" step="1" disabled style="width:100%;">
+      <div>正答（破線）におけるスライダー（上に示したもの）の値: <span>${d.model_answer}</span></div>
+      <div style="margin-top:10px; color:${Math.abs(d.illusion_value - d.model_answer)<=0?'black':'black'};">
+        あなたの回答（実線）におけるスライダーの値: ${d.illusion_value}
+      </div>
+    </div>`;
+  },
+  choices: ['次へ'],
+on_load: function(){
+  const d = last_illusion_data;
+  const canvas = document.getElementById(`feedback_canvas_${i}`);
+  const ctx = canvas.getContext('2d');
+  const base_radius = 100;
+  const offset = -d.model_answer; // 正答位置の補正用
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // --- (1) あなたが調整した図形を塗りつぶし ---
+  ctx.beginPath();
+  ctx.arc(190, 200, base_radius - offset - d.illusion_value, 0, 2*Math.PI);
+  ctx.fillStyle = d.left_color;
+  ctx.fill();
+  ctx.closePath();
+
+  ctx.beginPath();
+  ctx.arc(490, 200, base_radius + offset + d.illusion_value, 0, 2*Math.PI);
+  ctx.fillStyle = d.right_color;
+  ctx.fill();
+  ctx.closePath();
+
+  // --- (2) 正答位置を灰破線で表示 ---
+  ctx.setLineDash([6,4]);
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = 'black';
+  ctx.beginPath();
+  ctx.arc(190, 200, base_radius - offset - d.model_answer, 0, 2*Math.PI);
+  ctx.stroke();
+  ctx.closePath();
+
+  ctx.beginPath();
+  ctx.arc(490, 200, base_radius + offset + d.model_answer, 0, 2*Math.PI);
+  ctx.stroke();
+  ctx.closePath();
+
+  // --- (3) あなたの回答位置を黒実線で表示（直前に調整したスライダー1） ---
+  ctx.setLineDash([]);
+  ctx.lineWidth = 1;
+  ctx.strokeStyle = 'black';
+  ctx.beginPath();
+  ctx.arc(190, 200, base_radius - offset - d.illusion_value, 0, 2*Math.PI);
+  ctx.stroke();
+  ctx.closePath();
+
+  ctx.beginPath();
+  ctx.arc(490, 200, base_radius + offset + d.illusion_value, 0, 2*Math.PI);
+  ctx.stroke();
+  ctx.closePath();
+
+  // --- (4) ラベル（任意） ---
+  ctx.font = '16px sans-serif';
+  ctx.fillStyle = 'black';
+  ctx.fillText('正しい回答（破線）', 535, 40);
+  ctx.fillStyle = 'black';
+  ctx.fillText('あなたの回答（実線）', 535, 65);
+},
+  on_finish: function(){
+    // 次へを押したら白画面を一瞬出す
+    const blank = document.createElement('div');
+    Object.assign(blank.style, {
+      position:'fixed',top:0,left:0,width:'100%',height:'100%',
+      background:'white',zIndex:9999
+    });
+    document.body.appendChild(blank);
+    setTimeout(()=>blank.remove(), 800); // 0.8秒
+  }
+};
+
+
+  timeline.push({
+    timeline:[illusion_or_not, feedback_trial],
+    conditional_function:function(){ return continueNested; }
+  });
+}
+
+// 使用機器
+ var equip = {
+    type: jsPsychSurveyMultiChoice,
+    horizontal: true,
+    questions: [
+        {
+          prompt: "回答に使用した画面の種類を回答してください",
+          options: jsPsych.randomization.repeat(['外部モニター', 'ノートパソコン付属のディスプレイ', 'タブレット付属のディスプレイ', 'スマートフォン付属のディスプレイ', 'その他'], 1),
+          required: true,
+          name: 'equip',
+          on_load: function() {
+            document.querySelectorAll('.jspsych-survey-multi-choice-question').forEach(q => {
+              q.classList.add('jspsych-survey-multi-choice-horizontal');
+            });
+          }
+        },
+    ],
+    button_label: '次へ',
+};
+timeline.push(equip);
+
+var finish = {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: 
+        `<div><pre>
+          以下のボタンから回答を送信してください。
+          回答データの送信され、活動報告に記入していただくパスワードが表示されます。
+        </pre></div>`,
+    choices: ['回答データを送信'],
+    on_finish: function() {
+        url = "https://script.google.com/macros/s/AKfycbztECUQ4hvtsuLEE8Lpby2mevMOS-2eEViZT5OxtLoSipvjd8LoAqCg7DxdxbiJvxo9/exec";
+        
+        fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain"
+          },
+          body: JSON.stringify({
+            subID: null,
+            getSubID: 0,
+            data: jsPsych.data.get().csv()
+          })
+        })
+        .then(response => response.text())
+        .then(text => {
+          try {
+            const result = JSON.parse(text);
+            console.log("成功:", result);
+          } catch (e) {
+            console.error("JSONパース失敗:", text);
+          }
+        })
+        .catch(error => console.error("fetch失敗:", error));
+    }
+};
+timeline.push(finish);
+
+var thanks = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: 
+    `<div><pre>
+      これでアンケートは終わりです。
+      タブを閉じ実験への参加を終了してください。
+      実験に参加いただき、ありがとうございました。
+    </pre></div>`,
+  // stimulus: 
+  //   `<div><pre>
+  //     これでアンケートは終わりです。
+  //     以下のパスワードを、記録したうえで、活動報告の欄に入力してください。
+  //     Pass: xxxxxxxx
+  //     パスワードの記録が済み次第、タブを閉じ実験への参加を終了してください。
+  //     実験に参加いただき、ありがとうございました。
+  //   </pre></div>`,
+  choices: 'NO_KEYS'
+};
+timeline.push(thanks);
+
+jsPsych.run(timeline);
+</script>
+</html>
