@@ -193,10 +193,10 @@ const illusion_or_not = {
     function drawIllusion(r_diff){
       ctx.clearRect(0,0,canvas.width,canvas.height);
       ctx.beginPath();
-      ctx.arc(190,200,base_radius - offset - r_diff,0,2*Math.PI);
+      ctx.arc(210,200,base_radius - offset - r_diff,0,2*Math.PI);
       ctx.fillStyle = left_color_i; ctx.fill();
       ctx.beginPath();
-      ctx.arc(490,200,base_radius + offset + r_diff,0,2*Math.PI);
+      ctx.arc(510,200,base_radius + offset + r_diff,0,2*Math.PI);
       ctx.fillStyle = right_color_i; ctx.fill();
     }
     drawIllusion(0);
@@ -269,13 +269,13 @@ on_load: function(){
 
   // --- (1) あなたが調整した図形を塗りつぶし ---
   ctx.beginPath();
-  ctx.arc(190, 200, base_radius - offset - d.illusion_value, 0, 2*Math.PI);
+  ctx.arc(210, 200, base_radius - offset - d.illusion_value, 0, 2*Math.PI);
   ctx.fillStyle = d.left_color;
   ctx.fill();
   ctx.closePath();
 
   ctx.beginPath();
-  ctx.arc(490, 200, base_radius + offset + d.illusion_value, 0, 2*Math.PI);
+  ctx.arc(510, 200, base_radius + offset + d.illusion_value, 0, 2*Math.PI);
   ctx.fillStyle = d.right_color;
   ctx.fill();
   ctx.closePath();
@@ -285,12 +285,12 @@ on_load: function(){
   ctx.lineWidth = 1;
   ctx.strokeStyle = 'black';
   ctx.beginPath();
-  ctx.arc(190, 200, base_radius - offset - d.model_answer, 0, 2*Math.PI);
+  ctx.arc(210, 200, base_radius - offset - d.model_answer, 0, 2*Math.PI);
   ctx.stroke();
   ctx.closePath();
 
   ctx.beginPath();
-  ctx.arc(490, 200, base_radius + offset + d.model_answer, 0, 2*Math.PI);
+  ctx.arc(510, 200, base_radius + offset + d.model_answer, 0, 2*Math.PI);
   ctx.stroke();
   ctx.closePath();
 
@@ -299,12 +299,12 @@ on_load: function(){
   ctx.lineWidth = 1;
   ctx.strokeStyle = 'black';
   ctx.beginPath();
-  ctx.arc(190, 200, base_radius - offset - d.illusion_value, 0, 2*Math.PI);
+  ctx.arc(210, 200, base_radius - offset - d.illusion_value, 0, 2*Math.PI);
   ctx.stroke();
   ctx.closePath();
 
   ctx.beginPath();
-  ctx.arc(490, 200, base_radius + offset + d.illusion_value, 0, 2*Math.PI);
+  ctx.arc(510, 200, base_radius + offset + d.illusion_value, 0, 2*Math.PI);
   ctx.stroke();
   ctx.closePath();
 
@@ -413,4 +413,5 @@ timeline.push(thanks);
 
 jsPsych.run(timeline);
 </script>
+
 </html>
