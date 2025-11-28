@@ -57,7 +57,7 @@
     appearance: none !important;
     width: 100%;
     height: 8px !important;        /* トラックの太さ */
-    background: #888 !important;   /* トラックの色 */
+    background: #000 !important;   /* トラックの色 */
     border-radius: 4px;
     outline: none;
     margin: 20px 0;                /* つまみが上下にズレるのを防止 */
@@ -175,7 +175,7 @@ const illusion_or_not = {
       <pre>下に示された2つの図形の大きさが等しくなるようスライダー1を調整し、
       自信の程度をスライダー2で評価してください。</pre>
       <div style="justify-content:center;">
-        <canvas id="illusion_canvas_${i}" width="720" height="400" style="background:white; border:1px solid #ccc;"></canvas>
+        <canvas id="illusion_canvas_${i}" width="720" height="400" style="background:gray; border:1px solid #ccc;"></canvas>
       </div>
       <input type="range" id="r_diff_input_${i}" min="-50" max="50" value="0" step="1" style="width:100%;">
       <div>（スライダー1）図形の大きさの調整に関する値: <span id="r_diff_value_${i}">0</span></div>
