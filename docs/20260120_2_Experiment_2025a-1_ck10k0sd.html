@@ -117,7 +117,6 @@ let confidence_value_map = {};
 let correct_streak = 0; // 連続正答カウント
 let continueNested = true;
 let abs_errors = [];
-let abs_errors_sum = [];
 
 let timeline = [];
 
@@ -184,8 +183,8 @@ const mean = abs_errors.length > 0
 document.getElementById("error_text").textContent =
     `平均絶対誤差: ${mean}`;
 
-const abs_errors_sum = abs_errors_sum.length > 0
-    ? (abs_errors_sum.reduce((a,b)=>a+b,0)).toFixed(2)
+const abs_errors_sum = abs_errors.length > 0
+    ? (abs_errors.reduce((a,b)=>a+b,0)).toFixed(2)
     : "-";
 
 document.getElementById("error_text_2").textContent =
