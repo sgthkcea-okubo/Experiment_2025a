@@ -104,6 +104,7 @@ let illusion_value_map = {};
 let confidence_value_map = {};
 let correct_streak = 0; // 連続正答カウント
 let continueNested = true;
+let abs_errors = [];
 
 let timeline = [];
 
@@ -157,6 +158,19 @@ const colorset1_2 = ["yellow","yellowgreen","orange"];
 const colorset1 = [colorset1_1, colorset1_2];
 const condition = 1; // 1:異系色条件, 0:同系色条件
 const num_of_loops = 50;
+function updateProgress(loop_i){
+  // 進捗
+  document.getElementById("progress_text").textContent =
+      `${loop_i+1} / ${num_of_loops} 問目`;
+
+  // 平均誤差
+  const mean = abs_errors.length > 0
+      ? (abs_errors.reduce((a,b)=>a+b,0) / abs_errors.length).toFixed(2)
+      : "-";
+
+  document.getElementById("error_text").textContent =
+      `平均誤差: ${mean}`;
+}
 
 for(let i=0;i<num_of_loops;i++){
   const colorcond1 = jsPsych.randomization.sampleWithReplacement(colorset1,1)[0];
@@ -171,20 +185,26 @@ for(let i=0;i<num_of_loops;i++){
 const illusion_or_not = {
   type: jsPsychHtmlButtonResponse,
   name: 'illusion_or_not_' + i,
-  stimulus: `<div>
-      <pre>下に示された2つの図形の大きさが等しくなるようスライダー1を調整し、
-      自信の程度をスライダー2で評価してください。</pre>
-      <div style="justify-content:center;">
+  stimulus: `
+    <div id="progress_box">
+        <span id="progress_text">0 / 50 問目</span>　
+        <span id="error_text">平均誤差: -</span>
+    </div>
+    <div>
+        <pre>下に示された2つの図形の大きさが等しくなるようスライダー1を調整し、
+        自信の程度をスライダー2で評価してください。</pre>
+        <div style="justify-content:center;">
         <canvas id="illusion_canvas_${i}" width="720" height="400" style="background:white; border:1px solid #ccc;"></canvas>
-      </div>
-      <input type="range" id="r_diff_input_${i}" min="-50" max="50" value="0" step="2" style="width:100%;">
-      <div>（スライダー1）図形の大きさの調整に関する値: <span id="r_diff_value_${i}">0</span></div>
-      <div class="slider-labels"><span>自信が無い</span><span>自信が有る</span></div>
-      <input type="range" id="confidence_input_${i}" min="1" max="7" value="4" step="1" style="width:100%;">
-      <div>（スライダー2）回答内容の自己評価に関する値: <span id="confidence_value_${i}">4</span></div>
+    </div>
+    <input type="range" id="r_diff_input_${i}" min="-50" max="50" value="0" step="2" style="width:100%;">
+        <div>（スライダー1）図形の大きさの調整に関する値: <span id="r_diff_value_${i}">0</span></div>
+        <div class="slider-labels"><span>自信が無い</span><span>自信が有る</span></div>
+        <input type="range" id="confidence_input_${i}" min="1" max="7" value="4" step="1" style="width:100%;">
+        <div>（スライダー2）回答内容の自己評価に関する値: <span id="confidence_value_${i}">4</span></div>
     </div>`,
   choices: ['回答を確定'],
   on_load: function(){
+    updateProgress(i);
     const canvas = document.getElementById('illusion_canvas_' + i);
     const ctx = canvas.getContext('2d');
     const base_radius = 100;
@@ -224,6 +244,8 @@ const illusion_or_not = {
     data.left_color = left_color_i;
     data.right_color = right_color_i;
     data.model_answer = -a;
+    const abs_error = Math.abs(data.illusion_value - data.model_answer);
+      abs_errors.push(abs_error);
 
     // --- 正答判定と連続正答カウント ---
     if (Math.abs(data.illusion_value - data.model_answer) <= 0) {
@@ -246,16 +268,21 @@ const feedback_trial = {
   type: jsPsychHtmlButtonResponse,
   stimulus: function(){
     const d = last_illusion_data;
-    return `<div>
-      <p>下の図は、あなたの回答と正答において調整された図形を示したものです。</p>
-      <div style="justify-content:center;">
+    return `
+    <div id="progress_box">
+        <span id="progress_text">0 / 50 問目</span>　
+        <span id="error_text">平均誤差: -</span>
+    </div>
+    <div>
+    <p>下の図は、あなたの回答と正答において調整された図形を示したものです。</p>
+    <div style="justify-content:center;">
         <canvas id="feedback_canvas_${i}" width="720" height="400" style="background:white; border:1px solid #ccc;"></canvas>
-      </div>
-      <input type="range" id="feedback_slider_${i}" min="-50" max="50" value="${d.model_answer}" step="2" disabled style="width:100%;">
-      <div>正答（破線）におけるスライダー（上に示したもの）の値: <span>${d.model_answer}</span></div>
-      <div style="margin-top:10px; color:${Math.abs(d.illusion_value - d.model_answer)<=0?'black':'black'};">
-        あなたの回答（実線）におけるスライダーの値: ${d.illusion_value}
-      </div>
+    </div>
+    <input type="range" id="feedback_slider_${i}" min="-50" max="50" value="${d.model_answer}" step="2" disabled style="width:100%;">
+        <div>正答（破線）におけるスライダー（上に示したもの）の値: <span>${d.model_answer}</span></div>
+        <div style="margin-top:10px; color:${Math.abs(d.illusion_value - d.model_answer)<=0?'black':'black'};">
+            あなたの回答（実線）におけるスライダーの値: ${d.illusion_value}
+        </div>
     </div>`;
   },
   choices: ['次へ'],
