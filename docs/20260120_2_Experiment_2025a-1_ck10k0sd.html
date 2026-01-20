@@ -187,9 +187,11 @@ function updateProgress(loop_i){
     const abs_errors_sum = abs_errors.length > 0
         ? (abs_errors.reduce((a,b)=>a+b,0)).toFixed(2)
         : "-";
+
+    const score = 100-abs_errors_sum;
     
     document.getElementById("error_text_2").textContent =
-        `現在のスコア: 100-${abs_errors_sum}`;
+        `現在のスコア: ${score}`;
 }
 
 for(let i=0;i<num_of_loops;i++){
