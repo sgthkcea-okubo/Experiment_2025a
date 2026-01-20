@@ -175,13 +175,13 @@ function updateProgress(loop_i){
   document.getElementById("progress_text").textContent =
       `${loop_i+1} / ${num_of_loops} 問目`;
 
-  // 平均誤差
+  // 平均絶対誤差
   const mean = abs_errors.length > 0
       ? (abs_errors.reduce((a,b)=>a+b,0) / abs_errors.length).toFixed(2)
       : "-";
 
   document.getElementById("error_text").textContent =
-      `平均誤差: ${mean}`;
+      `平均絶対誤差: ${mean}`;
 }
 
 for(let i=0;i<num_of_loops;i++){
