@@ -18,81 +18,93 @@
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <style>
-  div, #jspsych-target, #jspsych-content {
-    font-size: 20px;
-  }
-  pre {
-    font-size: 20px;
-    max-width: 680px;
-    white-space: pre-wrap;
-    word-break: break-all;
-    text-align: left;
-    margin: auto;
-    font-family: monospace;
-    white-space: pre-line;
-  }
-  p {
-    text-indent: 1em;
-  }
-  .slider-labels {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0px;
-  }
-  .jspsych-btn {
-    font-size: 20px;
-    width: 20em;
-    height: 5em;
-  }
+    div, #jspsych-target, #jspsych-content {
+        font-size: 20px;
+    }
+    pre {
+        font-size: 20px;
+        max-width: 680px;
+        white-space: pre-wrap;
+        word-break: break-all;
+        text-align: left;
+        margin: auto;
+        font-family: monospace;
+        white-space: pre-line;
+    }
+    p {
+        text-indent: 1em;
+    }
+    .slider-labels {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0px;
+    }
+    .jspsych-btn {
+        font-size: 20px;
+        width: 20em;
+        height: 5em;
+    }
     /* SurveyMultiSelect のチェックボックスを大きくする */
-  .jspsych-survey-multi-select-question input[type="checkbox"] {
-    width: 24px;    /* 横サイズ */
-    height: 24px;   /* 縦サイズ */
-    transform: scale(1.4); /* 拡大倍率（任意） */
-    margin-right: 8px;
-  }
-  /* ▼ jsPsych の slider を確実に上書きする（超重要） */
-  .jspsych-content input[type="range"] {
-    -webkit-appearance: none !important;
-    appearance: none !important;
-    width: 100%;
-    height: 8px !important;        /* トラックの太さ */
-    background: #888 !important;   /* トラックの色 */
-    border-radius: 4px;
-    outline: none;
-    margin: 20px 0;                /* つまみが上下にズレるのを防止 */
-  }
-  /* WebKit (Chrome / Edge / Safari) のつまみ位置調整 */
-  .jspsych-content input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none !important;
-    appearance: none !important;
-    width: 28px !important;
-    height: 28px !important;
-    background: #000 !important;
-    border-radius: 50%;
-    cursor: pointer;
+    .jspsych-survey-multi-select-question input[type="checkbox"] {
+        width: 24px;    /* 横サイズ */
+        height: 24px;   /* 縦サイズ */
+        transform: scale(1.4); /* 拡大倍率（任意） */
+        margin-right: 8px;
+    }
+    /* ▼ jsPsych の slider を確実に上書きする（超重要） */
+    .jspsych-content input[type="range"] {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        width: 100%;
+        height: 8px !important;        /* トラックの太さ */
+        background: #888 !important;   /* トラックの色 */
+        border-radius: 4px;
+        outline: none;
+        margin: 20px 0;                /* つまみが上下にズレるのを防止 */
+    }
+    /* WebKit (Chrome / Edge / Safari) のつまみ位置調整 */
+    .jspsych-content input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        width: 28px !important;
+        height: 28px !important;
+        background: #000 !important;
+        border-radius: 50%;
+        cursor: pointer;
 
-    /* ▼ ここを調整（中央がずれている原因はほぼここ） */
-    margin-top: 0px;   /* ← まずこの値に変更。ずれるなら -4, -2, 0, +2 と調整 */
-  }
-  /* --- Firefox --- */
-  .jspsych-content input[type="range"]::-moz-range-thumb {
-    width: 28px !important;
-    height: 28px !important;
-    background: #000 !important;
-    border-radius: 50%;
-    cursor: pointer;
-  }
-  /* Firefox の track */
-  .jspsych-content input[type="range"]::-moz-range-track {
-    height: 8px !important;
-    background: #888 !important;
-    border-radius: 4px;
-  }
-  .jspsych-survey-multi-select-option {
-    line-height: 1.6 !important;   /* ←ここを prompt の行間に合わせる */
-    margin-bottom: 8px !important; /* 任意。行間調整したい時に追加 */
-  }
+        /* ▼ ここを調整（中央がずれている原因はほぼここ） */
+        margin-top: 0px;   /* ← まずこの値に変更。ずれるなら -4, -2, 0, +2 と調整 */
+    }
+    /* --- Firefox --- */
+    .jspsych-content input[type="range"]::-moz-range-thumb {
+        width: 28px !important;
+        height: 28px !important;
+        background: #000 !important;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    /* Firefox の track */
+    .jspsych-content input[type="range"]::-moz-range-track {
+        height: 8px !important;
+        background: #888 !important;
+        border-radius: 4px;
+    }
+    .jspsych-survey-multi-select-option {
+        line-height: 1.6 !important;   /* ←ここを prompt の行間に合わせる */
+        margin-bottom: 8px !important; /* 任意。行間調整したい時に追加 */
+    }
+    #progress_box {
+      position: fixed;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 14px;
+      background: rgba(255,255,255,0.9);
+      padding: 4px 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      z-index: 9999;
+    }
 </style>
 </head>
 <body></body>
