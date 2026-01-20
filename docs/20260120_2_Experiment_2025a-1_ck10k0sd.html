@@ -171,24 +171,24 @@ const colorset1 = [colorset1_1, colorset1_2];
 const condition = 1; // 1:異系色条件, 0:同系色条件
 const num_of_loops = 50;
 function updateProgress(loop_i){
-// 進捗
-document.getElementById("progress_text").textContent =
-    `${loop_i+1} / ${num_of_loops} 問目`;
-
-// 平均絶対誤差
-const mean = abs_errors.length > 0
-    ? (abs_errors.reduce((a,b)=>a+b,0) / abs_errors.length).toFixed(2)
-    : "-";
-
-document.getElementById("error_text").textContent =
-    `平均絶対誤差: ${mean}`;
-
-const abs_errors_sum = abs_errors.length > 0
-    ? (abs_errors.reduce((a,b)=>a+b,0)).toFixed(2)
-    : "-";
-
-document.getElementById("error_text_2").textContent =
-    `現在のスコア: ${100-abs_errors_sum}`;
+    // 進捗
+    document.getElementById("progress_text").textContent =
+        `${loop_i+1} / ${num_of_loops} 問目`;
+    
+    // 平均絶対誤差
+    const mean = abs_errors.length > 0
+        ? (abs_errors.reduce((a,b)=>a+b,0) / abs_errors.length).toFixed(2)
+        : "-";
+    
+    document.getElementById("error_text").textContent =
+        `平均絶対誤差: ${mean}`;
+    
+    const abs_errors_sum = abs_errors.length > 0
+        ? (abs_errors.reduce((a,b)=>a+b,0)).toFixed(2)
+        : "-";
+    
+    document.getElementById("error_text_2").textContent =
+        `現在のスコア: ${100-abs_errors_sum}`;
 }
 
 
