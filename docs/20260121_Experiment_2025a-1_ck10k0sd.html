@@ -68,7 +68,7 @@
         appearance: none !important;
         width: 28px !important;
         height: 28px !important;
-        background: #333 !important;
+        background: #555 !important;
         border-radius: 50%;
         cursor: pointer;
 
@@ -79,7 +79,7 @@
     .jspsych-content input[type="range"]::-moz-range-thumb {
         width: 28px !important;
         height: 28px !important;
-        background: #333 !important;
+        background: #555 !important;
         border-radius: 50%;
         cursor: pointer;
     }
@@ -114,7 +114,8 @@
 <body></body>
 <script>
 const jsPsych = initJsPsych({});
-    
+
+let consent_timestamp = null;
 let last_illusion_data = null;
 let illusion_value_map = {};
 let confidence_value_map = {};
@@ -209,7 +210,10 @@ const informed_consent = {
     on_finish: function(data){
         data.section = SECTION.CONSENT.name;
         data.section_id = SECTION.CONSENT.id;
-      data.question_id = 0;
+        data.question_id = 0;
+        consent_timestamp = Date.now();
+        data.consent_time = consent_timestamp;
+        data.consent_time_iso = new Date().toISOString();
     },
   };
 timeline.push(informed_consent)
@@ -534,6 +538,16 @@ var finish = {
     data.section = SECTION.CONSENT.name;
     data.section_id = SECTION.CONSENT.id;
     data.question_id = 1;
+    data.submit_time = Date.now();
+    
+    data.submit_time = submit_time;
+
+    if (consent_timestamp !== null) {
+        data.total_response_time_ms = submit_time - consent_timestamp;
+    } else {
+        data.total_response_time_ms = null;
+    }
+    
     url = "https://script.google.com/macros/s/AKfycbxKtZe6edDQ0W-T9o5vkZ-JouCY2C7Ul-irHxSh8SGAIJ3Bp3pv6gv02uQmIEM1AoptWQ/exec";
     
     fetch(url, {
