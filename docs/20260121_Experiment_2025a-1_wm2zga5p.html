@@ -429,25 +429,25 @@ const illusion_or_not = {
 
     // --- このtrialのデータを保持してfeedbackに渡す ---
     last_illusion_data = data;
-  }
-};
 
-const d = last_illusion_data;
-if (- d.model_answer + d.illusion_value < 0) { // スライダーが左寄りすぎ
-  document.getElementById("eval_text").textContent =
-    `右の図形<左の図形`;
-} else if (- d.model_answer + d.illusion_value > 0) { // スライダーが右寄りすぎ
-  document.getElementById("eval_text").textContent =
-    `右の図形>左の図形`;
-} else { // 正答
-  document.getElementById("eval_text").textContent =
-    `右の図形=左の図形`;
+    const d = last_illusion_data;
+    if (- d.model_answer + d.illusion_value < 0) { // スライダーが左寄りすぎ
+      document.getElementById("eval_text").textContent =
+        `右の図形<左の図形`;
+    } else if (- d.model_answer + d.illusion_value > 0) { // スライダーが右寄りすぎ
+      document.getElementById("eval_text").textContent =
+        `右の図形>左の図形`;
+    } else { // 正答
+      document.getElementById("eval_text").textContent =
+        `右の図形=左の図形`;
+    };
+  }
 };
 
 const feedback_trial = {
   type: jsPsychHtmlButtonResponse,
   stimulus: function(){
-    const d = last_illusion_data;
+    // const d = last_illusion_data;
     return `
     <div id="progress_box">
         <span id="progress_text">0 / ${num_of_loops} 問目</span>　
