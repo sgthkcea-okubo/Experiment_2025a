@@ -113,8 +113,6 @@
 </head>
 <body></body>
 <script>
-const jsPsych = initJsPsych({});
-
 let last_illusion_data = null;
 let illusion_value_map = {};
 let confidence_value_map = {};
@@ -122,67 +120,17 @@ let correct_streak = 0; // 連続正答カウント
 let continueNested = true;
 let abs_errors = [];
 const SECTION = {
-    CONSENT:  { id: 0, name: "consent" },
-    DEMO:     { id: 1, name: "demographic" },
-    TASK:     { id: 2, name: "task" },
-    FEEDBACK: { id: 3, name: "feedback" }
+    CONSENT: 
+        { id: 0, name: "consent"},
+    NAME: 
+        {id: 1, name: "name"},
+    DEMO: 
+        { id: 2, name: "demographic"},
+    TASK: 
+        { id: 3, name: "task"},
+    FEEDBACK: 
+        { id: 4, name: "feedback"}
 };
-
-let timeline = [];
-
-// インフォームドコンセント
-const informed_consent = {
-    type: jsPsychSurveyMultiSelect,
-    questions: [{
-        prompt: `<div><pre>
-          <strong>インフォームドコンセント</strong>
-          <p>上記説明を読み理解した上で本実験へ参加いただける場合は、次のチェックボックスについて内容を理解した上でチェックを入れ、「次へ」のボタンを押してください。</pre></div>`,
-        options: [`<div style="margin:auto"><pre><p>私は、本研究の内容と目的について十分に説明され、本研究に参加することに同意します。私は、ペナルティを負うことなく、いつでも自由に参加を取りやめることができることを理解しています。</pre></div>`], 
-        horizontal: true,
-        required: true,
-        name: 'agreement',
-    }],
-    button_label: '次へ',
-    preamble: 
-        `<div>
-            <pre>
-<p>（下にスクロールして読み進め、アンケートに進む場合はページ下部のボタンを押してください。）
-
-<strong>参加者の皆様へ。</strong>
-    
-<p>この研究にご参加いただき、ありがとうございます。この研究は、みなさんの知覚経験と信念の関連を調べるものです。 この調査の結果は、哲学的理論の構築や批判に寄与することになります。
-    
-<strong>自主的な参加と秘密保持</strong>
-    
-<p>この研究への参加は完全に任意であり、参加を拒否することも、また、いつでも、いかなる理由でも、ペナルティなしに参加を撤回することができます。
-    
-<p>この研究への参加は秘密厳守です。あなたが提供した情報には、この研究に携わる研究者と研究責任者のみがアクセスすることができます。また、データの分析はすべて集計された上で行われます。つまり、すべての参加者のデータの集計値が分析され、あなたの個々の回答が具体的に分析されることは決してありません。さらに、研究結果の公表はすべて匿名とし、個人を特定できるような情報がデータに関連付けられることはありません。
-    
-<strong>匿名データセットの保存</strong>
-    
-<p>論文公開後は、この研究で収集された情報は、完全に匿名化された上で、オープンサイエンス・フレームワークなどのオンラインデータリポジトリを通じて一般に公開されます。これにより、質の高い科学研究に貢献することができます。例えば、他の研究者は、実施した分析を繰り返したり、別の仮説を検証したりすることができます。
-            </pre>
-        </div>`,
-    on_finish: function(data){
-      data.question_type = "informed_consent";
-      data.question_type_id = 0;
-      data.question_id = 0;
-    },
-  };
-timeline.push(informed_consent)
-
-// 名前入力
-const name = {
-  type: jsPsychSurveyText,
-  questions: [{prompt:`<pre>回答者の名前を入力してください。</pre>`, name:'name'}],
-  button_label: '次へ',
-  on_finish: function(data){
-    data.question_type = "name";
-    data.question_type_id = 1;
-    data.question_id = 0;
-  },
-};
-timeline.push(name)
 
 // 色セット
 const colorset1_1 = ["blue","indigo","violet"];
@@ -220,6 +168,64 @@ function updateProgress(loop_i){
     document.getElementById("error_text_2").textContent =
         `現在のスコア: ${score}`;
 }
+    
+const jsPsych = initJsPsych({});
+
+let timeline = [];
+
+// インフォームドコンセント
+const informed_consent = {
+    type: jsPsychSurveyMultiSelect,
+    questions: [{
+        prompt: `<div><pre>
+          <strong>インフォームドコンセント</strong>
+          <p>上記説明を読み理解した上で本実験へ参加いただける場合は、次のチェックボックスについて内容を理解した上でチェックを入れ、「次へ」のボタンを押してください。</pre></div>`,
+        options: [`<div style="margin:auto"><pre><p>私は、本研究の内容と目的について十分に説明され、本研究に参加することに同意します。私は、ペナルティを負うことなく、いつでも自由に参加を取りやめることができることを理解しています。</pre></div>`], 
+        horizontal: true,
+        required: true,
+        name: 'agreement',
+    }],
+    button_label: '次へ',
+    preamble: 
+        `<div>
+            <pre>
+<p>（下にスクロールして読み進め、アンケートに進む場合はページ下部のボタンを押してください。）
+
+<strong>参加者の皆様へ。</strong>
+    
+<p>この研究にご参加いただき、ありがとうございます。この研究は、みなさんの知覚経験と信念の関連を調べるものです。 この調査の結果は、哲学的理論の構築や批判に寄与することになります。
+    
+<strong>自主的な参加と秘密保持</strong>
+    
+<p>この研究への参加は完全に任意であり、参加を拒否することも、また、いつでも、いかなる理由でも、ペナルティなしに参加を撤回することができます。
+    
+<p>この研究への参加は秘密厳守です。あなたが提供した情報には、この研究に携わる研究者と研究責任者のみがアクセスすることができます。また、データの分析はすべて集計された上で行われます。つまり、すべての参加者のデータの集計値が分析され、あなたの個々の回答が具体的に分析されることは決してありません。さらに、研究結果の公表はすべて匿名とし、個人を特定できるような情報がデータに関連付けられることはありません。
+    
+<strong>匿名データセットの保存</strong>
+    
+<p>論文公開後は、この研究で収集された情報は、完全に匿名化された上で、オープンサイエンス・フレームワークなどのオンラインデータリポジトリを通じて一般に公開されます。これにより、質の高い科学研究に貢献することができます。例えば、他の研究者は、実施した分析を繰り返したり、別の仮説を検証したりすることができます。
+            </pre>
+        </div>`,
+    on_finish: function(data){
+        data.section = SECTION.CONSENT.name;
+        data.section_id = SECTION.CONSENT.id;
+      data.question_id = 0;
+    },
+  };
+timeline.push(informed_consent)
+
+// 名前入力
+const name = {
+  type: jsPsychSurveyText,
+  questions: [{prompt:`<pre>回答者の名前を入力してください。</pre>`, name:'name'}],
+  button_label: '次へ',
+  on_finish: function(data){
+        data.section = SECTION.NAME.name;
+        data.section_id = SECTION.NAME.id;
+    data.question_id = 0;
+  },
+};
+timeline.push(name)
 
 for(let i=0;i<num_of_loops;i++){
   const colorcond1 = jsPsych.randomization.sampleWithReplacement(colorset1,1)[0];
@@ -288,9 +294,9 @@ const illusion_or_not = {
     confidence_value_map[i] = Number(cInput.value);
   },
   on_finish: function(data){
-    data.question_type = "trial";
-    data.question_type_id = 2;
-    data.question_id = 00;
+    data.section = SECTION.TASK.name;
+    data.section_id = SECTION.TASK.id;
+    data.question_id = 0;
     data.cycle_index0 = i;
     data.illusion_value = illusion_value_map[i];
     data.confidence_value = confidence_value_map[i];
@@ -399,9 +405,9 @@ on_load: function(){
     ctx.fillText('あなたの回答（実線）', 535, 65);
 },
   on_finish: function(){
-    data.question_type = "trial";
-    data.question_type_id = 2;
-    data.question_id = 01;
+    data.section = SECTION.FEEDBACK.name;
+    data.section_id = SECTION.FEEDBACK.id;
+    data.question_id = 0;
     data.cycle_index0 = i;
     // 次へを押したら白画面を一瞬出す
     const blank = document.createElement('div');
@@ -440,9 +446,9 @@ on_load: function(){
     ],
     button_label: '次へ',
     on_finish: function() {
-      data.question_type = "demographic";
-      data.question_type_id = 3;
-      data.question_id = 0;
+        data.section = SECTION.DEMO.name;
+        data.section_id = SECTION.DEMO.id;
+        data.question_id = 0;
     },
 };
 timeline.push(equip);
@@ -456,8 +462,8 @@ var finish = {
     </pre></div>`,
   choices: ['回答を終了（テスト用のためデータは送信されません。）'],
   on_finish: function() {
-    data.question_type = "demographic";
-    data.question_type_id = 3;
+    data.section = SECTION.CONSENT.name;
+    data.section_id = SECTION.CONSENT.id;
     data.question_id = 1;
     url = "https://script.google.com/macros/s/AKfycbxKtZe6edDQ0W-T9o5vkZ-JouCY2C7Ul-irHxSh8SGAIJ3Bp3pv6gv02uQmIEM1AoptWQ/exec";
     
