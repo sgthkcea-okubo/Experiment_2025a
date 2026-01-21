@@ -254,8 +254,12 @@ const illusion_or_not = {
     <input type="range" id="r_diff_input_${i}" min="-50" max="50" value="0" step="2" style="width:100%;  pointer-events:none;">
         <div>（スライダー1）図形の大きさの調整に関する値: <span id="r_diff_value_${i}">0</span></div>
         <div style="margin-top:10px; text-align:center;">
-            <button id="minus_btn_${i}" style="font-size:20px; width:20em; height:3em;">スライダー1の値を−2する</button>
-            <button id="plus_btn_${i}" style="font-size:20px; width:20em; height:3em; margin-left:20px;">スライダー1の値を＋2する</button>
+            <button id="minus_btn_${i}" style="font-size:20px; width:20em; height:3em;">スライダー1の値を-2する</button>
+            <button id="plus_btn_${i}" style="font-size:20px; width:20em; height:3em; margin-left:20px;">スライダー1の値を+2する</button>
+        </div>
+        <div style="margin-top:10px; text-align:center;">
+            <button id="minus_btn_2_${i}" style="font-size:20px; width:20em; height:3em;">スライダー1の値を-10する</button>
+            <button id="plus_btn_2_${i}" style="font-size:20px; width:20em; height:3em; margin-left:20px;">スライダー1の値を+10する</button>
         </div>
         <div class="slider-labels"><span>自信が無い</span><span>自信が有る</span></div>
         <input type="range" id="confidence_input_${i}" min="1" max="7" value="4" step="1" style="width:100%;">
@@ -316,6 +320,28 @@ const illusion_or_not = {
       }
     };
 
+    // ▼ マイナスボタン2
+    document.getElementById('minus_btn_2_' + i).onclick = function(){
+      let v = Number(rInput.value);
+      if(v > -50){
+        rInput.value = v - 10;
+        illusion_value_map[i] = v - 10;
+        document.getElementById('r_diff_value_' + i).textContent = rInput.value;
+        drawIllusion(Number(rInput.value));
+      }
+    };
+
+    // ▼ プラスボタン2
+    document.getElementById('plus_btn_2_' + i).onclick = function(){
+      let v = Number(rInput.value);
+      if(v < 50){
+        rInput.value = v + 10;
+        illusion_value_map[i] = v + 10;
+        document.getElementById('r_diff_value_' + i).textContent = rInput.value;
+        drawIllusion(Number(rInput.value));
+      }
+    };
+    
     illusion_value_map[i] = Number(rInput.value);
     confidence_value_map[i] = Number(cInput.value);
   },
