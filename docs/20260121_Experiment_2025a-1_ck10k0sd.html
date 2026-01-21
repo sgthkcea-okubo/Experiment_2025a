@@ -106,9 +106,9 @@
       border-radius: 6px;
       z-index: 9999;
     }
-    .illusion-bg {
+    /* .illusion-bg {
         background: #808080;
-    }
+    } */
 </style>
 </head>
 <body></body>
@@ -250,7 +250,7 @@ const illusion_or_not = {
         （スライダー1の値をツマミにより調整することはできません。）
         また、スライダー1の値の調整について、自信の程度をスライダー2で評価してください。</pre>
         <div style="justify-content:center;">
-        <canvas id="illusion_canvas_${i}" class="illusion-bg" width="720" height="400" style="background:white; border:1px solid #ccc;"></canvas>
+        <canvas id="illusion_canvas_${i}" background=#808080 width="720" height="400" style="background:white; border:1px solid #ccc;"></canvas>
     </div>
     <input type="range" id="r_diff_input_${i}" min="-50" max="50" value="0" step="2" style="width:100%;  pointer-events:none;">
         <div>（スライダー1）図形の大きさの調整に関する値: <span id="r_diff_value_${i}">0</span></div>
