@@ -432,10 +432,22 @@ const illusion_or_not = {
   }
 };
 
+const d = last_illusion_data;
+if (-d.model_answer + d.illusion_value < 0) { // スライダーが左寄りすぎ
+  document.getElementById("eval_text").textContent =
+    `右の図形<左の図形`;
+} else if (-d.model_answer + d.illusion_value > 0) { // スライダーが右寄りすぎ
+  document.getElementById("eval_text").textContent =
+    `右の図形>左の図形`;
+} else { // 正答
+  document.getElementById("eval_text").textContent =
+    `右の図形=左の図形`;
+};
+
 const feedback_trial = {
   type: jsPsychHtmlButtonResponse,
   stimulus: function(){
-    const d = last_illusion_data;
+    // const d = last_illusion_data;
     return `
     <div id="progress_box">
         <span id="progress_text">0 / ${num_of_loops} 問目</span>　
@@ -443,7 +455,9 @@ const feedback_trial = {
     </div>
     <div style="height:28px;"></div>
     <div>
-    <p>下の図は、あなたの回答と正答において調整された図形を示したものです。</p>
+    <pre>下の図は、正答において調整された図形と、あなたの回答において調整された図形の大きさを示したものです。
+    あなたの調整した2つの図形の大きさ（白色と黒色の破線）は、次のように比較されます。</pre>
+    <span id="eval_text"></span>
     <div style="justify-content:center;">
         <canvas id="feedback_canvas_${i}" width="720" height="400" style="background:#808080;" border:1px solid #ccc;"></canvas>
     </div>
@@ -465,37 +479,57 @@ on_load: function(){
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // --- (1) あなたが調整した図形を塗りつぶし ---
+    // --- (1) 正答において調整した図形を塗りつぶし ---
     ctx.beginPath();
-    ctx.arc(210, 200, base_radius - offset - d.illusion_value, 0, 2*Math.PI);
+    ctx.arc(210, 200, base_radius - offset - d.model_answer, 0, 2*Math.PI);
     ctx.fillStyle = d.left_color;
     ctx.fill();
     ctx.closePath();
     
     ctx.beginPath();
-    ctx.arc(510, 200, base_radius + offset + d.illusion_value, 0, 2*Math.PI);
+    ctx.arc(510, 200, base_radius + offset + d.model_answer, 0, 2*Math.PI);
     ctx.fillStyle = d.right_color;
     ctx.fill();
     ctx.closePath();
     
-    // --- (2) 正答位置を灰破線で表示 ---
-    ctx.setLineDash([6,4]);
-    ctx.lineWidth = 1;
+    // // --- (2) 正答位置を灰破線で表示 ---
+    // ctx.setLineDash([6,4]);
+    // ctx.lineWidth = 1;
+    // ctx.strokeStyle = 'black';
+    // ctx.beginPath();
+    // ctx.arc(210, 200, base_radius - offset - d.model_answer, 0, 2*Math.PI);
+    // ctx.stroke();
+    // ctx.closePath();
+    
+    // ctx.beginPath();
+    // ctx.arc(510, 200, base_radius + offset + d.model_answer, 0, 2*Math.PI);
+    // ctx.stroke();
+    // ctx.closePath();
+    
+    // --- (3) あなたの回答位置を二色交互破線（白黒チェッカー線）で表示（直前に調整したスライダー1） ---
+    const dash = [8, 8];   // 8px 描画 → 8px 空白
+    const width = 1;
+
+    ctx.setLineDash(dash);
+    ctx.lineDashOffset = 0;
+    ctx.lineWidth = width;
     ctx.strokeStyle = 'black';
+
     ctx.beginPath();
-    ctx.arc(210, 200, base_radius - offset - d.model_answer, 0, 2*Math.PI);
+    ctx.arc(210, 200, base_radius - offset - d.illusion_value, 0, 2*Math.PI);
     ctx.stroke();
     ctx.closePath();
-    
+
     ctx.beginPath();
-    ctx.arc(510, 200, base_radius + offset + d.model_answer, 0, 2*Math.PI);
+    ctx.arc(510, 200, base_radius + offset + d.illusion_value, 0, 2*Math.PI);
     ctx.stroke();
     ctx.closePath();
-    
-    // --- (3) あなたの回答位置を黒実線で表示（直前に調整したスライダー1） ---
-    ctx.setLineDash([]);
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = 'black';
+
+    ctx.setLineDash(dash);
+    ctx.lineDashOffset = dash[0];
+    ctx.lineWidth = width;
+    ctx.strokeStyle = 'white';
+
     ctx.beginPath();
     ctx.arc(210, 200, base_radius - offset - d.illusion_value, 0, 2*Math.PI);
     ctx.stroke();
@@ -506,12 +540,12 @@ on_load: function(){
     ctx.stroke();
     ctx.closePath();
     
-    // --- (4) ラベル（任意） ---
-    ctx.font = '16px sans-serif';
-    ctx.fillStyle = 'black';
-    ctx.fillText('正しい回答（破線）', 535, 40);
-    ctx.fillStyle = 'black';
-    ctx.fillText('あなたの回答（実線）', 535, 65);
+    // // --- (4) ラベル（任意） ---
+    // ctx.font = '16px sans-serif';
+    // ctx.fillStyle = 'black';
+    // ctx.fillText('正しい回答（灰以外の色で色付けされた図形）', 535, 40);
+    // ctx.fillStyle = 'black';
+    // ctx.fillText('あなたの回答において調整された図形の大きさ（白色と黒色の破線）', 535, 65);
 },
   on_finish: function(data){
     data.section = SECTION.FEEDBACK.name;
