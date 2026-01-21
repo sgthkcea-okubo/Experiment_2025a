@@ -452,7 +452,7 @@ const feedback_trial = {
     <div>
     <p>下の図は、あなたの回答と正答において調整された図形を示したものです。</p>
     <div style="justify-content:center;">
-        <canvas id="feedback_canvas_${i}" width="720" height="400" border:1px solid #ccc;"></canvas>
+        <canvas id="feedback_canvas_${i}" width="720" height="400" style="background:#808080;" border:1px solid #ccc;"></canvas>
     </div>
     <input type="range" id="feedback_slider_${i}" min="-50" max="50" value="${d.model_answer}" step="2" disabled style="width:100%;">
         <div>正答（破線）におけるスライダー（上に示したもの）の値: <span>${d.model_answer}</span></div>
