@@ -96,7 +96,7 @@
     #progress_box {
       position: static;
       top: 8px;
-      font-size: 20px;
+      font-size: 28px;
       font-weight: bold;
       padding: 4px 10px;
       border: 1px solid #ccc;
@@ -161,7 +161,7 @@ function updateProgress(loop_i){
     //     `平均絶対誤差: ${mean}`;
 
     //絶対誤差の和
-    const abs_errors_sum = abs_errors.length > 0
+    const abs_errors_sum = abs_errors.length >= 0
         ? (abs_errors.reduce((a,b)=>a+b,0)).toFixed(2)
         : "-";
 
@@ -246,7 +246,7 @@ const illusion_or_not = {
   stimulus: `
     <div id="progress_box">
         <span id="progress_text">0 / ${num_of_loops} 問目</span>　
-        <span id="error_text_2">現在のスコア: 100</span>
+        <span id="error_text_2">現在のスコア: -</span>
     </div>
     <div style="height:28px;"></div>
     <div>
