@@ -121,6 +121,12 @@ let confidence_value_map = {};
 let correct_streak = 0; // 連続正答カウント
 let continueNested = true;
 let abs_errors = [];
+const SECTION = {
+    CONSENT:  { id: 0, name: "consent" },
+    DEMO:     { id: 1, name: "demographic" },
+    TASK:     { id: 2, name: "task" },
+    FEEDBACK: { id: 3, name: "feedback" }
+};
 
 let timeline = [];
 
@@ -183,7 +189,9 @@ const colorset1_1 = ["blue","indigo","violet"];
 const colorset1_2 = ["yellow","yellowgreen","orange"];
 const colorset1 = [colorset1_1, colorset1_2];
 const condition = 1; // 1:異系色条件, 0:同系色条件
-data.color_condition = condition;
+data.color_condition = condition2;
+const condition = 1; // 1:フィードバックあり, 0:フィードバックなし
+data.color_condition = condition2;
 const num_of_loops = 30;
 function updateProgress(loop_i){
     // 進捗
