@@ -113,6 +113,8 @@
 </head>
 <body></body>
 <script>
+const jsPsych = initJsPsych({});
+    
 let last_illusion_data = null;
 let illusion_value_map = {};
 let confidence_value_map = {};
@@ -168,8 +170,6 @@ function updateProgress(loop_i){
     document.getElementById("error_text_2").textContent =
         `現在のスコア: ${score}`;
 }
-    
-const jsPsych = initJsPsych({});
 
 let timeline = [];
 
