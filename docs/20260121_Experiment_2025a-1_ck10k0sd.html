@@ -246,9 +246,11 @@ const illusion_or_not = {
         <span id="error_text_2">現在のスコア: -</span>
     </div>
     <div>
-        <pre>下に示された2つの図形の大きさが等しくなるよう、スライダー1の値をボタンにより調整してください。
+        <pre>下に示された2つの図形の大きさが等しくなるよう、
+        スライダー1の値をボタンにより調整してください。
         （スライダー1の値をツマミにより調整することはできません。）
-        また、スライダー1の値の調整について、自信の程度をスライダー2で評価してください。</pre>
+        また、スライダー1の値の調整について、
+        自信の程度をスライダー2で評価してください。</pre>
         <div style="justify-content:center;">
         <canvas id="illusion_canvas_${i}" background=#808080 width="720" height="400" style="background:white; border:1px solid #ccc;"></canvas>
     </div>
@@ -262,7 +264,7 @@ const illusion_or_not = {
             <button id="minus_btn_2_${i}" style="font-size:20px; width:20em; height:3em;">スライダー1の値を-10する</button>
             <button id="plus_btn_2_${i}" style="font-size:20px; width:20em; height:3em; margin-left:20px;">スライダー1の値を+10する</button>
         </div>
-        <pre></pre>
+        <div style="height:14px;"></div>
         <div class="slider-labels"><span>自信が無い</span><span>自信が有る</span></div>
         <input type="range" id="confidence_input_${i}" min="1" max="7" value="4" step="1" style="width:100%;">
         <div>（スライダー2）回答内容の自己評価に関する値: <span id="confidence_value_${i}">4</span></div>
