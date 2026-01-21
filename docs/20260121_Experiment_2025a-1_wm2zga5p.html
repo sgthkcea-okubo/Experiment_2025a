@@ -51,6 +51,48 @@
         transform: scale(1.4); /* 拡大倍率（任意） */
         margin-right: 8px;
     }
+    /* ===== インフォームドコンセント全体 ===== */
+    .consent-survey .jspsych-survey-multi-select-question {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ===== options 全体 ===== */
+    .consent-survey fieldset {
+      border: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* ===== 1選択肢 ===== */
+    .consent-survey .jspsych-survey-multi-select-option {
+      width: auto;
+      max-width: 720px;
+    }
+
+    /* ★ 実際に縦並びにするのは label ★ */
+    .consent-survey .jspsych-survey-multi-select-option label {
+      display: flex;
+      flex-direction: column;   /* ← 縦並び */
+      align-items: center;      /* ← checkbox 中央 */
+      gap: 12px;
+    }
+
+    /* ===== checkbox ===== */
+    .consent-survey
+    .jspsych-survey-multi-select-option input[type="checkbox"] {
+      margin: 0;
+    }
+
+    /* ===== 文章 ===== */
+    .consent-survey
+    .jspsych-survey-multi-select-option span {
+      text-align: left;
+      line-height: 1.6;
+    }
     /* ▼ jsPsych の slider を確実に上書きする（超重要） */
     .jspsych-content input[type="range"] {
         -webkit-appearance: none !important;
@@ -181,7 +223,6 @@ const informed_consent = {
           <strong>インフォームドコンセント</strong>
           <p>上記説明を読み理解した上で本実験へ参加いただける場合は、次のチェックボックスについて内容を理解した上でチェックを入れ、「次へ」のボタンを押してください。</pre></div>`,
         options: [`<div style="margin:auto"><pre><p>私は、本研究の内容と目的について十分に説明され、本研究に参加することに同意します。私は、ペナルティを負うことなく、いつでも自由に参加を取りやめることができることを理解しています。</pre></div>`], 
-        horizontal: true,
         required: true,
         name: 'agreement',
     }],
