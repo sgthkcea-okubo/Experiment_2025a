@@ -421,10 +421,23 @@ on_load: function(){
 };
 
 
+if (condition2 === 1) {
+  // フィードバックあり
   timeline.push({
-    timeline:[illusion_or_not, feedback_trial],
-    conditional_function:function(){ return continueNested; }
+    timeline: [illusion_or_not, feedback_trial],
+    conditional_function: function(){
+      return continueNested;
+    }
   });
+} else {
+  // フィードバックなし
+  timeline.push({
+    timeline: [illusion_or_not],
+    conditional_function: function(){
+      return continueNested;
+    }
+  });
+}
 }
 
 // 使用機器
