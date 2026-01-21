@@ -431,16 +431,6 @@ const illusion_or_not = {
     last_illusion_data = data;
 
     const d = last_illusion_data;
-    if (- d.model_answer + d.illusion_value < 0) { // スライダーが左寄りすぎ
-      document.getElementById("eval_text").textContent =
-        `右の図形<左の図形`;
-    } else if (- d.model_answer + d.illusion_value > 0) { // スライダーが右寄りすぎ
-      document.getElementById("eval_text").textContent =
-        `右の図形>左の図形`;
-    } else { // 正答
-      document.getElementById("eval_text").textContent =
-        `右の図形=左の図形`;
-    };
   }
 };
 
@@ -472,6 +462,16 @@ const feedback_trial = {
 on_load: function(){
     updateProgress(i);
     const d = last_illusion_data;
+    if (- d.model_answer + d.illusion_value < 0) { // スライダーが左寄りすぎ
+      document.getElementById("eval_text").textContent =
+        `右の図形<左の図形`;
+    } else if (- d.model_answer + d.illusion_value > 0) { // スライダーが右寄りすぎ
+      document.getElementById("eval_text").textContent =
+        `右の図形>左の図形`;
+    } else { // 正答
+      document.getElementById("eval_text").textContent =
+        `右の図形=左の図形`;
+    };
     const canvas = document.getElementById(`feedback_canvas_${i}`);
     const ctx = canvas.getContext('2d');
     const base_radius = 100;
