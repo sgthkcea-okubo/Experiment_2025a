@@ -437,7 +437,7 @@ const illusion_or_not = {
 const feedback_trial = {
   type: jsPsychHtmlButtonResponse,
   stimulus: function(){
-    // const d = last_illusion_data;
+    const d = last_illusion_data;
     return `
     <div id="progress_box">
         <span id="progress_text">0 / ${num_of_loops} 問目</span>　
