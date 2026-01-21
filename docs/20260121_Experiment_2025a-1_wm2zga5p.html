@@ -447,7 +447,7 @@ if (-d.model_answer + d.illusion_value < 0) { // スライダーが左寄りす�
 const feedback_trial = {
   type: jsPsychHtmlButtonResponse,
   stimulus: function(){
-    // const d = last_illusion_data;
+    const d = last_illusion_data;
     return `
     <div id="progress_box">
         <span id="progress_text">0 / ${num_of_loops} 問目</span>　
