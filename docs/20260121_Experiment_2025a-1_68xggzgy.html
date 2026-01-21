@@ -536,7 +536,7 @@ var finish = {
       以下のボタンから回答を送信してください。
       回答データの送信され、活動報告に記入していただくパスワードが表示されます。
     </pre></div>`,
-  choices: ['回答を終了（テスト用のためデータは送信されません。）'],
+  choices: ['回答を終了'],
   on_finish: function(data) {
     data.section = SECTION.CONSENT.name;
     data.section_id = SECTION.CONSENT.id;
