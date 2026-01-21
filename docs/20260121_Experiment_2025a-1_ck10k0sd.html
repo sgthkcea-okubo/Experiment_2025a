@@ -121,6 +121,8 @@ let illusion_value_map = {};
 let confidence_value_map = {};
 let correct_streak = 0; // 連続正答カウント
 let continueNested = true;
+let increments_1 = 2
+let increments_2 = 10
 let abs_errors = [];
 const SECTION = {
     CONSENT: 
@@ -309,9 +311,9 @@ const illusion_or_not = {
     // ▼ マイナスボタン
     document.getElementById('minus_btn_' + i).onclick = function(){
       let v = Number(rInput.value);
-      if(v > -50){
-        rInput.value = v - 2;
-        illusion_value_map[i] = v - 2;
+      if(v >= -50 + increments_1){
+        rInput.value = v - increments_1;
+        illusion_value_map[i] = v - increments_1;
         document.getElementById('r_diff_value_' + i).textContent = rInput.value;
         drawIllusion(Number(rInput.value));
       }
@@ -320,9 +322,9 @@ const illusion_or_not = {
     // ▼ プラスボタン
     document.getElementById('plus_btn_' + i).onclick = function(){
       let v = Number(rInput.value);
-      if(v < 50){
-        rInput.value = v + 2;
-        illusion_value_map[i] = v + 2;
+      if(v <= 50 - increments_1){
+        rInput.value = v + increments_1;
+        illusion_value_map[i] = v + increments_1;
         document.getElementById('r_diff_value_' + i).textContent = rInput.value;
         drawIllusion(Number(rInput.value));
       }
@@ -331,9 +333,9 @@ const illusion_or_not = {
     // ▼ マイナスボタン2
     document.getElementById('minus_btn_2_' + i).onclick = function(){
       let v = Number(rInput.value);
-      if(v > -50){
-        rInput.value = v - 10;
-        illusion_value_map[i] = v - 10;
+      if(v >= -50 + increments_2){
+        rInput.value = v - increments_2;
+        illusion_value_map[i] = v - increments_2;
         document.getElementById('r_diff_value_' + i).textContent = rInput.value;
         drawIllusion(Number(rInput.value));
       }
@@ -342,9 +344,9 @@ const illusion_or_not = {
     // ▼ プラスボタン2
     document.getElementById('plus_btn_2_' + i).onclick = function(){
       let v = Number(rInput.value);
-      if(v < 50){
-        rInput.value = v + 10;
-        illusion_value_map[i] = v + 10;
+      if(v <= 50 - increments_2){
+        rInput.value = v + increments_2;
+        illusion_value_map[i] = v + increments_2;
         document.getElementById('r_diff_value_' + i).textContent = rInput.value;
         drawIllusion(Number(rInput.value));
       }
