@@ -251,7 +251,7 @@ const illusion_or_not = {
         <div style="justify-content:center;">
         <canvas id="illusion_canvas_${i}" class="illusion-bg" width="720" height="400" style="background:white; border:1px solid #ccc;"></canvas>
     </div>
-    <input type="range" id="r_diff_input_${i}" min="-50" max="50" value="0" step="2" style="width:100%;">
+    <input type="range" id="r_diff_input_${i}" min="-50" max="50" value="0" step="2" style="width:100%;  pointer-events:none;">
         <div>（スライダー1）図形の大きさの調整に関する値: <span id="r_diff_value_${i}">0</span></div>
         <div style="margin-top:10px; text-align:center;">
             <button id="minus_btn_${i}" style="font-size:20px; width:20em; height:3em;">スライダー1の値を−2する</button>
