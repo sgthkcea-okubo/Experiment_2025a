@@ -433,10 +433,10 @@ const illusion_or_not = {
 };
 
 const d = last_illusion_data;
-if (-d.model_answer + d.illusion_value < 0) { // スライダーが左寄りすぎ
+if (- d.model_answer + d.illusion_value < 0) { // スライダーが左寄りすぎ
   document.getElementById("eval_text").textContent =
     `右の図形<左の図形`;
-} else if (-d.model_answer + d.illusion_value > 0) { // スライダーが右寄りすぎ
+} else if (- d.model_answer + d.illusion_value > 0) { // スライダーが右寄りすぎ
   document.getElementById("eval_text").textContent =
     `右の図形>左の図形`;
 } else { // 正答
