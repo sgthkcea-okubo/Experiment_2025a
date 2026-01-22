@@ -464,13 +464,46 @@ on_load: function(){
     const d = last_illusion_data;
     if (- d.model_answer + d.illusion_value < 0) { // スライダーが左寄りすぎ
       document.getElementById("eval_text").textContent =
-        `あなたの調整した左の図形＞あなたの調整した右の図形`;
+        `<div style="
+            font-size: 28px;
+            text-align: center;
+            font-weight: bold;">
+            あなたの結果
+        </div>
+        <div style="
+            font-size: 28px;
+            text-align: center;
+            font-weight: bold;">
+            左の図形＞右の図形
+        </div>`;
     } else if (- d.model_answer + d.illusion_value > 0) { // スライダーが右寄りすぎ
       document.getElementById("eval_text").textContent =
-        `あなたの調整した左の図形＜あなたの調整した右の図形`;
+        `<div style="
+            font-size: 28px;
+            text-align: center;
+            font-weight: bold;">
+            あなたの結果
+        </div>
+        <div style="
+            font-size: 28px;
+            text-align: center;
+            font-weight: bold;">
+            左の図形＜右の図形
+        </div>`;
     } else { // 正答
       document.getElementById("eval_text").textContent =
-        `あなたの調整した左の図形＝あなたの調整した右の図形`;
+        `<div style="
+            font-size: 28px;
+            text-align: center;
+            font-weight: bold;">
+            あなたの結果
+        </div>
+        <div style="
+            font-size: 28px;
+            text-align: center;
+            font-weight: bold;">
+            左の図形＝右の図形
+        </div>`;
     };
     const canvas = document.getElementById(`feedback_canvas_${i}`);
     const ctx = canvas.getContext('2d');
