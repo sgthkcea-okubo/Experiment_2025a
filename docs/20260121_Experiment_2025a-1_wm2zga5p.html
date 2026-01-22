@@ -438,7 +438,7 @@ const feedback_trial = {
   type: jsPsychHtmlButtonResponse,
   stimulus: function(){
     const d = last_illusion_data;
-    return `
+    return '
     <div id="progress_box">
         <span id="progress_text">0 / ${num_of_loops} 問目</span>　
         <span id="error_text_2">現在のスコア: -</span>
@@ -449,7 +449,7 @@ const feedback_trial = {
         text-align: center;
         font-weight: bold;">
     <span id="eval_text"></span>
-    </div>
+    </div>'
   },
   choices: ['次へ'],
 on_load: function(){
@@ -457,22 +457,22 @@ on_load: function(){
     const d = last_illusion_data;
     if (- d.model_answer + d.illusion_value < 0) { // スライダーが左寄りすぎ
       document.getElementById("eval_text").textContent =
-        `<pre>
+        '<pre>
             あなたの結果
             左の図形＞右の図形
-        </pre>`;
+        </pre>';
     } else if (- d.model_answer + d.illusion_value > 0) { // スライダーが右寄りすぎ
       document.getElementById("eval_text").textContent =
-        `<pre>
+        '<pre>
             あなたの結果
             左の図形＜右の図形
-        </pre>`;
+        </pre>';
     } else { // 正答
       document.getElementById("eval_text").textContent =
-        `<pre>
+        '<pre>
             あなたの結果
             左の図形＝右の図形
-        </pre>`;
+        </pre>';
     };
     const canvas = document.getElementById(`feedback_canvas_${i}`);
     const ctx = canvas.getContext('2d');
