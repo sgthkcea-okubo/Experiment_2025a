@@ -448,8 +448,21 @@ const feedback_trial = {
         font-size: 28px;
         text-align: center;
         font-weight: bold;">
-    <span id="eval_text"></span>
-    </div>`
+    <pre>
+        あなたの結果
+        <span id="eval_text"></span>
+    </pre>
+    </div>
+    <div style="justify-content:center;">
+        <canvas id="feedback_canvas_${i}" width="720" height="400" style="background:#808080;" border:1px solid #ccc;"></canvas>
+    </div>
+    <input type="range" id="feedback_slider_${i}" min="-50" max="50" value="${d.model_answer}" step="2" disabled style="width:100%;">
+        <div>正答（破線）におけるスライダー（上に示したもの）の値: <span>${d.model_answer}</span></div>
+        <div style="margin-top:10px; color:${Math.abs(d.illusion_value - d.model_answer)<=0?'black':'black'};">
+            あなたの回答（実線）におけるスライダーの値: ${d.illusion_value}
+        </div>
+    </div>
+    `
   },
   choices: ['次へ'],
 on_load: function(){
@@ -457,22 +470,13 @@ on_load: function(){
     const d = last_illusion_data;
     if (- d.model_answer + d.illusion_value < 0) { // スライダーが左寄りすぎ
       document.getElementById("eval_text").textContent =
-        `<pre>
-            あなたの結果
-            左の図形＞右の図形
-        </pre>`;
+        `左の図形＞右の図形`;
     } else if (- d.model_answer + d.illusion_value > 0) { // スライダーが右寄りすぎ
       document.getElementById("eval_text").textContent =
-        `<pre>
-            あなたの結果
-            左の図形＜右の図形
-        </pre>`;
+        `左の図形＜右の図形`;
     } else { // 正答
       document.getElementById("eval_text").textContent =
-        `<pre>
-            あなたの結果
-            左の図形＝右の図形
-        </pre>`;
+        `左の図形＝右の図形`;
     };
     const canvas = document.getElementById(`feedback_canvas_${i}`);
     const ctx = canvas.getContext('2d');
