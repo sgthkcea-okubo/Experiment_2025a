@@ -444,7 +444,9 @@ const feedback_trial = {
         <span id="error_text_2">現在のスコア: -</span>
     </div>
     <div style="height:28px;"></div>
-    <pre style="
+    <pre 
+        line-height: 70%;
+        style="
         font-size: 28px;
         text-align: center;
         font-weight: bold;">
@@ -548,10 +550,10 @@ on_load: function(){
     
     // // --- (4) ラベル（任意） ---
     ctx.font = '16px sans-serif';
-    // ctx.fillStyle = 'black';
-    // ctx.fillText('正しい回答（灰以外の色で色付けされた図形）', 535, 40);
     ctx.fillStyle = 'black';
-    ctx.fillText('あなたの回答の示す図形の大きさ（白黒交互の線）', 350, 40);
+    ctx.fillText('灰色以外で塗りつぶされた図形：正答の示す図形', 350, 65);
+    ctx.fillStyle = 'black';
+    ctx.fillText('白黒交互の線：あなたの回答の示す図形の大きさ', 350, 40);
 },
   on_finish: function(data){
     data.section = SECTION.FEEDBACK.name;
