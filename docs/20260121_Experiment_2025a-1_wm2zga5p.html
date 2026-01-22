@@ -457,22 +457,22 @@ on_load: function(){
     const d = last_illusion_data;
     if (- d.model_answer + d.illusion_value < 0) { // スライダーが左寄りすぎ
       document.getElementById("eval_text").textContent =
-        '<pre>
+        `<pre>
             あなたの結果
             左の図形＞右の図形
-        </pre>';
+        </pre>`;
     } else if (- d.model_answer + d.illusion_value > 0) { // スライダーが右寄りすぎ
       document.getElementById("eval_text").textContent =
-        '<pre>
+        `<pre>
             あなたの結果
             左の図形＜右の図形
-        </pre>';
+        </pre>`;
     } else { // 正答
       document.getElementById("eval_text").textContent =
-        '<pre>
+        `<pre>
             あなたの結果
             左の図形＝右の図形
-        </pre>';
+        </pre>`;
     };
     const canvas = document.getElementById(`feedback_canvas_${i}`);
     const ctx = canvas.getContext('2d');
