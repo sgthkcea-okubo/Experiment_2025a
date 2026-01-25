@@ -603,33 +603,35 @@ if (condition2 === 1) {
 timeline.push(equip);
 
 var age = {
-  type: jsPsychSurveyText,
-  questions: [
+    type: jsPsychSurveyText,
+    questions: [
       { prompt: '年齢を入力してください', columns: 3, required: true, name: 'age' },
-  ],
-  button_label: '次へ',
-  on_finish: function(data) {
-    data.section = SECTION.DEMO.name;
-    data.section_id = SECTION.DEMO.id;
-    data.question_id = 1;
+    ],
+    button_label: '次へ',
+    on_finish: function(data) {
+        data.section = SECTION.DEMO.name;
+        data.section_id = SECTION.DEMO.id;
+        data.question_id = 1;
+    }
 };
 timeline.push(age);
 
 var gender = {
-  type: jsPsychSurveyMultiChoice,
-  questions: [
+    type: jsPsychSurveyMultiChoice,
+    questions: [
       {prompt: "性別を選択してください",
        options: jsPsych.randomization.repeat(['男性', '女性', 'その他'], 1),
        required: true,
        horizontal: true,
        name: 'gender' 
       },
-  ],
-  button_label: '次へ',
-  on_finish: function(data) {
-    data.section = SECTION.DEMO.name;
-    data.section_id = SECTION.DEMO.id;
-    data.question_id = 2;
+    ],
+    button_label: '次へ',
+    on_finish: function(data) {
+        data.section = SECTION.DEMO.name;
+        data.section_id = SECTION.DEMO.id;
+        data.question_id = 2;
+    }
 };
 timeline.push(gender);
 
