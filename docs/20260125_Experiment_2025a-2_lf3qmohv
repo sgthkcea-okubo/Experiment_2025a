@@ -183,11 +183,11 @@ const SECTION = {
 const colorset1_1 = ["indigo"];
 const colorset1_2 = ["yellow"];
 const colorset1 = [colorset1_1, colorset1_2];
-const condition = 0; // 1:異系色条件, 0:同系色条件
+const condition = 1; // 1:異系色条件, 0:同系色条件
 jsPsych.data.addProperties({
   color_condition: condition
 });
-const condition2 = 1; // 1:フィードバックあり, 0:フィードバックなし
+const condition2 = 0; // 1:フィードバックあり, 0:フィードバックなし
 jsPsych.data.addProperties({
   feedback_condition: condition2
 });
