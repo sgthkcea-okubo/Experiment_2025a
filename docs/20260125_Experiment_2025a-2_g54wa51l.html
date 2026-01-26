@@ -583,7 +583,7 @@ if (condition2 === 1) {
     questions: [
       {
         prompt: "回答に使用した画面の種類を回答してください",
-        options: jsPsych.randomization.repeat(['外部モニター', 'ノートパソコン付属のディスプレイ', 'タブレット付属のディスプレイ', 'スマートフォン付属のディスプレイ', 'その他'], 1),
+        options: jsPsych.randomization.repeat(['PC', 'タブレット', 'スマートフォン', 'その他ファイブディスプレイ'], 1),
         required: true,
         name: 'equip',
         on_load: function() {
