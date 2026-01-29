@@ -174,7 +174,7 @@ function jsonp(url, params) {
   });
 }
 
-const STATUS_URL = "https://script.google.com/macros/s/AKfycbz_DszVPzrQImpQWvyk9AAUfDgDirxyqDwtwjsgVVMfwSzuizY5x4TzFmCWk4c1LLQf/exec"; // doGetがあるWebApp
+const STATUS_URL = "https://script.google.com/macros/s/AKfycbynEetCHK7hF-ewQfl41PrlfjZTxsRTqNtuK_vqQbxITKnkwXQAnUiai2dqkcO9JMdo/exec"; // doGetがあるWebApp
 
 async function precheckOrStop(){
   const res = await jsonp(STATUS_URL, { action: "status" });
@@ -694,7 +694,7 @@ var finish = {
         data.total_response_time_ms = null;
     }
     
-    url = "https://script.google.com/macros/s/AKfycbz_DszVPzrQImpQWvyk9AAUfDgDirxyqDwtwjsgVVMfwSzuizY5x4TzFmCWk4c1LLQf/exec";
+    url = "https://script.google.com/macros/s/AKfycbynEetCHK7hF-ewQfl41PrlfjZTxsRTqNtuK_vqQbxITKnkwXQAnUiai2dqkcO9JMdo/exec";
     
     fetch(url, {
       method: "POST",
