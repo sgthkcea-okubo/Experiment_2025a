@@ -174,7 +174,8 @@ function jsonp(url, params) {
   });
 }
 
-const STATUS_URL = "https://script.google.com/macros/s/AKfycbynEetCHK7hF-ewQfl41PrlfjZTxsRTqNtuK_vqQbxITKnkwXQAnUiai2dqkcO9JMdo/exec"; // doGetがあるWebApp
+const STATUS_URL = "https://script.google.com/macros/s/AKfycbynEetCHK7hF-ewQfl41PrlfjZTxsRTqNtuK_vqQbxITKnkwXQAnUiai2dqkcO9JMdo/exec?action=status&callback=cb
+"; // doGetがあるWebApp
 
 async function precheckOrStop(){
   const res = await jsonp(STATUS_URL, { action: "status" });
