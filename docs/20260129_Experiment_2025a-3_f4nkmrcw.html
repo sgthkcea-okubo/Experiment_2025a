@@ -157,6 +157,43 @@
 </head>
 <body></body>
 <script>
+
+function jsonp(url, params) {
+  return new Promise((resolve, reject) => {
+    const cb = "cb_" + Math.random().toString(36).slice(2);
+    params = { ...(params||{}), callback: cb };
+    const qs = new URLSearchParams(params).toString();
+    const s = document.createElement("script");
+    s.src = url + (url.includes("?") ? "&" : "?") + qs;
+
+    window[cb] = (data) => { resolve(data); cleanup(); };
+    s.onerror = () => { reject(new Error("jsonp failed")); cleanup(); };
+
+    function cleanup() { delete window[cb]; s.remove(); }
+    document.head.appendChild(s);
+  });
+}
+
+const STATUS_URL = "https://script.google.com/macros/s/AKfycby6N7oYrueignNF75wwWBgRxtSWVWJ7uRf_Rpg878yKQ6r_ZrOTAugnc09gYpIBjvibQw/exec"; // doGetがあるWebApp
+
+async function precheckOrStop(){
+  const res = await jsonp(STATUS_URL, { action: "status" });
+  if (!res.ok || !res.open) {
+    document.body.innerHTML = `
+      <h2>受付終了</h2>
+      <p>募集人数に達しました。ご協力ありがとうございました。</p>
+    `;
+    return false;
+  }
+  return true;
+}
+
+(async () => {
+  const ok = await precheckOrStop();
+  if (!ok) return;
+
+  // ここで jsPsych.init(...) を実行
+
 const jsPsych = initJsPsych({});
 
 let consent_timestamp = null;
@@ -705,6 +742,8 @@ var thanks = {
 timeline.push(thanks);
 
 jsPsych.run(timeline);
+
+})();// ここで jsPsych.init(...) を終了
 </script>
 
 </html>
